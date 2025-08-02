@@ -190,8 +190,6 @@ const VibeImage = styled.div`
         brightness(1) drop-shadow(0 0 5px rgba(255, 97, 166, 0.8)) 
         drop-shadow(0 0 10px rgba(255, 97, 166, 0.6)) 
         drop-shadow(0 0 15px rgba(255, 97, 166, 0.4));
-      animation: none;
-      opacity: 1;
     }
   }
 `;
@@ -218,8 +216,6 @@ const CodeDetroitImage = styled.div`
         brightness(1) drop-shadow(0 0 5px rgba(64, 244, 255, 0.8)) 
         drop-shadow(0 0 10px rgba(64, 244, 255, 0.6)) 
         drop-shadow(0 0 15px rgba(64, 244, 255, 0.4));
-      animation: none;
-      opacity: 1;
     }
   }
 `;
