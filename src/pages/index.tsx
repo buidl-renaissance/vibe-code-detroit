@@ -181,7 +181,7 @@ const VibeImage = styled.div`
     height: 100%;
     object-fit: contain;
     opacity: 0;
-    animation: ${neonTurnOn} 2s ease-in-out 0.5s forwards;
+    animation: ${neonTurnOn} 0.3s ease-in-out 0.5s forwards;
     filter: brightness(0) drop-shadow(0 0 0px rgba(255, 97, 166, 0));
     transition: all 0.3s ease;
     
@@ -209,7 +209,7 @@ const CodeDetroitImage = styled.div`
     height: 100%;
     object-fit: contain;
     opacity: 0;
-    animation: ${neonFlicker} 3s ease-in-out 2.5s forwards;
+    animation: ${neonFlicker} 3s ease-in-out 1.5s forwards;
     filter: brightness(0) drop-shadow(0 0 0px rgba(64, 244, 255, 0));
     transition: all 0.3s ease;
     
