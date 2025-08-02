@@ -51,6 +51,52 @@ const flicker = keyframes`
   }
 `;
 
+const neonTurnOn = keyframes`
+  0% {
+    opacity: 0;
+    filter: brightness(0) drop-shadow(0 0 0px rgba(255, 97, 166, 0));
+  }
+  50% {
+    opacity: 0.5;
+    filter: brightness(0.5) drop-shadow(0 0 5px rgba(255, 97, 166, 0.3));
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 10px rgba(255, 97, 166, 0.8)) drop-shadow(0 0 20px rgba(255, 97, 166, 0.6)) drop-shadow(0 0 30px rgba(255, 97, 166, 0.4));
+  }
+`;
+
+const neonFlicker = keyframes`
+  0% {
+    opacity: 0;
+    filter: brightness(0) drop-shadow(0 0 0px rgba(64, 244, 255, 0));
+  }
+  10% {
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 10px rgba(64, 244, 255, 0.8)) drop-shadow(0 0 20px rgba(64, 244, 255, 0.6)) drop-shadow(0 0 30px rgba(64, 244, 255, 0.4));
+  }
+  20% {
+    opacity: 0;
+    filter: brightness(0) drop-shadow(0 0 0px rgba(64, 244, 255, 0));
+  }
+  30% {
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 10px rgba(64, 244, 255, 0.8)) drop-shadow(0 0 20px rgba(64, 244, 255, 0.6)) drop-shadow(0 0 30px rgba(64, 244, 255, 0.4));
+  }
+  40% {
+    opacity: 0;
+    filter: brightness(0) drop-shadow(0 0 0px rgba(64, 244, 255, 0));
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 10px rgba(64, 244, 255, 0.8)) drop-shadow(0 0 20px rgba(64, 244, 255, 0.6)) drop-shadow(0 0 30px rgba(64, 244, 255, 0.4));
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 10px rgba(64, 244, 255, 0.8)) drop-shadow(0 0 20px rgba(64, 244, 255, 0.6)) drop-shadow(0 0 30px rgba(64, 244, 255, 0.4));
+  }
+`;
+
 // Styled Components
 const Page = styled.div`
   min-height: 100vh;
@@ -114,45 +160,68 @@ const Hero = styled.div`
 
 const TitleImage = styled.div`
   margin-bottom: 2rem;
+  position: relative;
+  width: 100%;
+  height: 400px;
   
   @media (max-width: 768px) {
     margin-bottom: 1.5rem;
+    height: 250px;
   }
+`;
+
+const VibeImage = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
   
   img {
-    max-width: 100%;
-    height: auto;
-    filter: 
-      drop-shadow(0 0 10px rgba(255, 97, 166, 0.8))
-      drop-shadow(0 0 20px rgba(255, 97, 166, 0.6))
-      drop-shadow(0 0 30px rgba(255, 97, 166, 0.4))
-      drop-shadow(0 0 40px rgba(255, 97, 166, 0.2));
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    animation: ${neonTurnOn} 2s ease-in-out 0.5s forwards;
+    filter: brightness(0) drop-shadow(0 0 0px rgba(255, 97, 166, 0));
     transition: all 0.3s ease;
-    animation: ${neonGlow} 2s ease-in-out infinite;
     
     @media (max-width: 768px) {
       filter: 
-        drop-shadow(0 0 5px rgba(255, 97, 166, 0.8))
-        drop-shadow(0 0 10px rgba(255, 97, 166, 0.6))
+        brightness(1) drop-shadow(0 0 5px rgba(255, 97, 166, 0.8)) 
+        drop-shadow(0 0 10px rgba(255, 97, 166, 0.6)) 
         drop-shadow(0 0 15px rgba(255, 97, 166, 0.4));
       animation: none;
+      opacity: 1;
     }
+  }
+`;
+
+const CodeDetroitImage = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    animation: ${neonFlicker} 3s ease-in-out 2.5s forwards;
+    filter: brightness(0) drop-shadow(0 0 0px rgba(64, 244, 255, 0));
+    transition: all 0.3s ease;
     
-    &:hover {
+    @media (max-width: 768px) {
       filter: 
-        drop-shadow(0 0 15px rgba(255, 97, 166, 1))
-        drop-shadow(0 0 30px rgba(255, 97, 166, 0.8))
-        drop-shadow(0 0 45px rgba(255, 97, 166, 0.6))
-        drop-shadow(0 0 60px rgba(255, 97, 166, 0.4));
-      transform: scale(1.02);
-      
-      @media (max-width: 768px) {
-        transform: none;
-        filter: 
-          drop-shadow(0 0 8px rgba(255, 97, 166, 1))
-          drop-shadow(0 0 15px rgba(255, 97, 166, 0.8))
-          drop-shadow(0 0 20px rgba(255, 97, 166, 0.6));
-      }
+        brightness(1) drop-shadow(0 0 5px rgba(64, 244, 255, 0.8)) 
+        drop-shadow(0 0 10px rgba(64, 244, 255, 0.6)) 
+        drop-shadow(0 0 15px rgba(64, 244, 255, 0.4));
+      animation: none;
+      opacity: 1;
     }
   }
 `;
@@ -515,13 +584,24 @@ export default function Home() {
         <Main>
           <Hero>
             <TitleImage>
-              <Image
-                src="/images/vibe-code-detroit.png"
-                alt="Vibe Code Detroit"
-                width={600}
-                height={200}
-                priority
-              />
+              <VibeImage>
+                <Image
+                  src="/images/vibe.png"
+                  alt="Vibe"
+                  width={600}
+                  height={200}
+                  priority
+                />
+              </VibeImage>
+              <CodeDetroitImage>
+                <Image
+                  src="/images/code-detroit.png"
+                  alt="Code Detroit"
+                  width={600}
+                  height={200}
+                  priority
+                />
+              </CodeDetroitImage>
             </TitleImage>
             <Subtitle>
               Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding. Our goal is simple: leverage technology to foster genuine connections, empower local initiatives, and nurture a supportive ecosystem rooted deeply in community values.
