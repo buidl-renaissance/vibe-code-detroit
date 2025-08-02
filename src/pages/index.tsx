@@ -496,6 +496,20 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://vibecodedetroit.com/" />
+        <meta property="og:title" content="Vibe Code Detroit - Community of Tech Enthusiasts" />
+        <meta property="og:description" content="Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding." />
+        <meta property="og:image" content="/images/vibe-code-detroit-featured.png" />
+        
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://vibecodedetroit.com/" />
+        <meta property="twitter:title" content="Vibe Code Detroit - Community of Tech Enthusiasts" />
+        <meta property="twitter:description" content="Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding." />
+        <meta property="twitter:image" content="/images/vibe-code-detroit-featured.png" />
       </Head>
       <Page>
         <Main>
