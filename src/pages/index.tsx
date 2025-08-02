@@ -138,11 +138,9 @@ const Main = styled.main`
   max-width: 900px;
   text-align: center;
   z-index: 1;
-  animation: ${float} 6s ease-in-out infinite;
   
   @media (max-width: 768px) {
     max-width: 100%;
-    animation: none;
   }
 `;
 
