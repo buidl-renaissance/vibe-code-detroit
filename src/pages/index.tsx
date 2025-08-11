@@ -435,10 +435,17 @@ const EventDescription = styled.p`
 
 export default function Home() {
   const handleScrollClick = () => {
-    window.scrollBy({
-      top: window.innerHeight,
-      behavior: 'smooth'
-    });
+    const arrow = document.querySelector('[data-scroll-indicator]');
+    if (arrow) {
+      const arrowRect = arrow.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const targetScroll = scrollTop + arrowRect.bottom + 20; // 20px buffer above the arrow
+      
+      window.scrollTo({
+        top: targetScroll,
+        behavior: 'smooth'
+      });
+    }
   };
 
   return (
@@ -486,7 +493,7 @@ export default function Home() {
                   priority
                 />
               </CodeDetroitImage>
-                              <ScrollIndicator onClick={handleScrollClick} />
+                              <ScrollIndicator onClick={handleScrollClick} data-scroll-indicator />
             </TitleImage>
             <Subtitle>
               Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding. Our goal is simple: leverage technology to foster genuine connections, empower local initiatives, and nurture a supportive ecosystem rooted deeply in community values.
