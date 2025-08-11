@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import styled, { keyframes } from "styled-components";
+import EmailCapture from "../components/EmailCapture";
 
 // Neon glow animation
 const neonGlow = keyframes`
@@ -638,6 +639,13 @@ export default function Home() {
               </EventLink>
             </div> */}
           </EventCard>
+
+          <EmailCapture 
+            title="Stay in the Vibe"
+            subtitle="Get notified about upcoming meetups, workshops, and community events."
+            placeholder="Enter your email to stay connected"
+            buttonText="Join the Vibe"
+          />
 
           {/* <CTAs>
             <PrimaryButton href="#join" target="_blank" rel="noopener noreferrer">
