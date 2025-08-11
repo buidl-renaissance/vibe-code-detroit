@@ -648,17 +648,11 @@ export default function Home() {
             </SecondaryButton>
           </CTAs> */}
         </Main>
-        {/* <Footer>
-          <FooterLink href="#workshops" target="_blank" rel="noopener noreferrer">
-            🎯 Workshops
+        <Footer>
+          <FooterLink href="/roadmap">
+            🗺️ Development Roadmap
           </FooterLink>
-          <FooterLink href="#projects" target="_blank" rel="noopener noreferrer">
-            🚀 Projects
-          </FooterLink>
-          <FooterLink href="#contact" target="_blank" rel="noopener noreferrer">
-            💬 Contact Us →
-          </FooterLink>
-        </Footer> */}
+        </Footer>
       </Page>
     </>
   );
