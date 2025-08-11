@@ -3,55 +3,6 @@ import Image from "next/image";
 import styled, { keyframes } from "styled-components";
 import EmailCapture from "../components/EmailCapture";
 
-// Neon glow animation
-const neonGlow = keyframes`
-  0%, 100% {
-    text-shadow: 
-      0 0 2px #FF61A6,
-      0 0 4px #FF61A6,
-      0 0 6px #FF61A6;
-  }
-  50% {
-    text-shadow: 
-      0 0 4px #FF61A6,
-      0 0 8px #FF61A6,
-      0 0 12px #FF61A6;
-  }
-`;
-
-const cyanGlow = keyframes`
-  0%, 100% {
-    text-shadow: 
-      0 0 2px #40F4FF,
-      0 0 4px #40F4FF,
-      0 0 6px #40F4FF;
-  }
-  50% {
-    text-shadow: 
-      0 0 4px #40F4FF,
-      0 0 8px #40F4FF,
-      0 0 12px #40F4FF;
-  }
-`;
-
-const float = keyframes`
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-`;
-
-const flicker = keyframes`
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-`;
-
 const neonTurnOn = keyframes`
   0% {
     opacity: 0;
@@ -95,6 +46,18 @@ const neonFlicker = keyframes`
   100% {
     opacity: 1;
     filter: brightness(1) drop-shadow(0 0 10px rgba(64, 244, 255, 0.8)) drop-shadow(0 0 20px rgba(64, 244, 255, 0.6)) drop-shadow(0 0 30px rgba(64, 244, 255, 0.4));
+  }
+`;
+
+const scrollBounce = keyframes`
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
   }
 `;
 
@@ -161,7 +124,7 @@ const TitleImage = styled.div`
   margin-bottom: 2rem;
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 100vh;
   
   @media (max-width: 768px) {
     margin-bottom: 1.5rem;
@@ -218,6 +181,60 @@ const CodeDetroitImage = styled.div`
         drop-shadow(0 0 10px rgba(64, 244, 255, 0.6)) 
         drop-shadow(0 0 15px rgba(64, 244, 255, 0.4));
     }
+  }
+`;
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const ScrollIndicator = styled.div`
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out 3s forwards;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+  
+  &:hover {
+    transform: translateX(-50%) scale(1.1);
+    
+    &::after {
+      animation: ${scrollBounce} 1s ease-in-out infinite;
+      text-shadow: 
+        0 0 20px rgba(64, 244, 255, 1),
+        0 0 30px rgba(64, 244, 255, 0.8),
+        0 0 40px rgba(64, 244, 255, 0.6),
+        0 0 50px rgba(64, 244, 255, 0.4);
+      filter: drop-shadow(0 0 12px rgba(64, 244, 255, 1));
+    }
+  }
+  
+  &::after {
+    content: '⌄';
+    color: #40F4FF;
+    font-size: 4rem;
+    font-weight: bold;
+    animation: ${scrollBounce} 1.5s ease-in-out infinite;
+    text-shadow: 
+      0 0 15px rgba(64, 244, 255, 0.8),
+      0 0 25px rgba(64, 244, 255, 0.6),
+      0 0 35px rgba(64, 244, 255, 0.4),
+      0 0 45px rgba(64, 244, 255, 0.2);
+    filter: drop-shadow(0 0 8px rgba(64, 244, 255, 0.8));
+    transition: all 0.3s ease;
   }
 `;
 
@@ -289,82 +306,6 @@ const TaglineText = styled.span`
   @media (max-width: 768px) {
     font-size: 0.9rem;
     letter-spacing: 1px;
-  }
-`;
-
-const CTAs = styled.div`
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-`;
-
-const Button = styled.a`
-  appearance: none;
-  border-radius: 50px;
-  height: 56px;
-  padding: 0 2rem;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
-  
-  &:hover::before {
-    left: 100%;
-  }
-`;
-
-const PrimaryButton = styled(Button)`
-  background: linear-gradient(135deg, #FF914D, #FF61A6);
-  color: white;
-  box-shadow: 
-    0 0 10px rgba(255, 145, 77, 0.4),
-    0 4px 15px rgba(255, 145, 77, 0.2);
-  
-  &:hover {
-    box-shadow: 
-      0 0 15px rgba(255, 145, 77, 0.6),
-      0 6px 20px rgba(255, 145, 77, 0.3);
-    transform: translateY(-2px);
-  }
-`;
-
-const SecondaryButton = styled(Button)`
-  background: transparent;
-  color: #40F4FF;
-  border-color: #40F4FF;
-  box-shadow: 
-    0 0 10px rgba(64, 244, 255, 0.3),
-    0 4px 15px rgba(64, 244, 255, 0.1);
-  
-  &:hover {
-    background: rgba(64, 244, 255, 0.1);
-    box-shadow: 
-      0 0 15px rgba(64, 244, 255, 0.5),
-      0 6px 20px rgba(64, 244, 255, 0.2);
-    transform: translateY(-2px);
   }
 `;
 
@@ -492,66 +433,14 @@ const EventDescription = styled.p`
   }
 `;
 
-const EventSpeaker = styled.div`
-  font-size: 1.1rem;
-  color: #40F4FF;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  font-family: 'Poppins', sans-serif;
-`;
-
-const EventTopics = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-  
-  li {
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0.5rem 0;
-    padding-left: 1.5rem;
-    position: relative;
-    font-family: 'Poppins', sans-serif;
-    
-    &::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: #FF61A6;
-      font-weight: bold;
-    }
-  }
-`;
-
-const EventSponsors = styled.div`
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
-  text-align: center;
-  margin-top: 1.5rem;
-  font-family: 'Poppins', sans-serif;
-`;
-
-const EventLink = styled.a`
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.8rem 1.5rem;
-  background: linear-gradient(135deg, #FF61A6, #FF914D);
-  color: white;
-  text-decoration: none;
-  border-radius: 25px;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(255, 97, 166, 0.4);
-  
-  &:hover {
-    box-shadow: 0 0 25px rgba(255, 97, 166, 0.6);
-    transform: translateY(-2px);
-  }
-`;
-
 export default function Home() {
+  const handleScrollClick = () => {
+    window.scrollBy({
+      top: window.innerHeight,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <>
       <Head>
@@ -597,6 +486,7 @@ export default function Home() {
                   priority
                 />
               </CodeDetroitImage>
+                              <ScrollIndicator onClick={handleScrollClick} />
             </TitleImage>
             <Subtitle>
               Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding. Our goal is simple: leverage technology to foster genuine connections, empower local initiatives, and nurture a supportive ecosystem rooted deeply in community values.
