@@ -313,7 +313,7 @@ export default function AIWorkshop() {
   return (
     <>
       <Head>
-        <title>AI in Software Development Workshop - Vibe Code Detroit</title>
+        <title>AI in Software Development Workshop, August 20th - Vibe Code Detroit</title>
         <meta
           name="description"
           content="Join us for a hands-on workshop exploring how AI is reshaping software development. Learn from senior engineers and get hands-on experience with AI tools."
