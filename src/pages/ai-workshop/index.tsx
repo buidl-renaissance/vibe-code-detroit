@@ -337,16 +337,6 @@ export default function AIWorkshop() {
             <EventLocation>📍 Bamboo Royal Oak</EventLocation>
           </EventHeader>
 
-          <BannerImage>
-            <Image
-              src="/images/ai-workshop-banner.png"
-              alt="AI in Software Development Workshop Banner"
-              width={800}
-              height={400}
-              priority
-            />
-          </BannerImage>
-
           <Section>
             <SectionTitle>About the Workshop</SectionTitle>
             <Description>
