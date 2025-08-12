@@ -324,6 +324,13 @@ export default function AIWorkshop() {
           href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <meta property="og:image" content="/images/vibe-code-detroit-featured.png" />
+        <meta property="og:title" content="AI in Software Development Workshop - Vibe Code Detroit" />
+        <meta property="og:description" content="Join us for a hands-on workshop exploring how AI is reshaping software development. Learn from senior engineers and get hands-on experience with AI tools." />
+        <meta property="og:url" content="https://vibecodedetroit.com/ai-workshop" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
       </Head>
       <Page>
         <Container>
