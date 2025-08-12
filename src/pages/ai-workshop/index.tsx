@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from "next/image";
 import styled from "styled-components";
 import Link from "next/link";
 
@@ -121,6 +122,26 @@ const EventLocation = styled.div`
   color: #ff914d;
   font-weight: 500;
   font-family: "Poppins", sans-serif;
+`;
+
+const BannerImage = styled.div`
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(64, 244, 255, 0.3);
+
+  @media (max-width: 768px) {
+    margin: 0 auto 2rem auto;
+    border-radius: 10px;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 `;
 
 const Section = styled.section`
@@ -315,6 +336,16 @@ export default function AIWorkshop() {
             <EventDate>August 20th</EventDate>
             <EventLocation>📍 Bamboo Royal Oak</EventLocation>
           </EventHeader>
+
+          <BannerImage>
+            <Image
+              src="/images/ai-workshop-banner.png"
+              alt="AI in Software Development Workshop Banner"
+              width={800}
+              height={400}
+              priority
+            />
+          </BannerImage>
 
           <Section>
             <SectionTitle>About the Workshop</SectionTitle>
