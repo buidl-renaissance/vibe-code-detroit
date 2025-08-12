@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import EmailCapture from "../components/EmailCapture";
 
@@ -64,9 +65,13 @@ const scrollBounce = keyframes`
 // Styled Components
 const Page = styled.div`
   min-height: 100vh;
-  background: 
-    linear-gradient(135deg, rgba(46, 26, 71, 0.6) 0%, rgba(27, 20, 100, 0.6) 50%, rgba(46, 26, 71, 0.6) 100%),
-    url('/images/vibe-code-background.png');
+  background: linear-gradient(
+      135deg,
+      rgba(46, 26, 71, 0.6) 0%,
+      rgba(27, 20, 100, 0.6) 50%,
+      rgba(46, 26, 71, 0.6) 100%
+    ),
+    url("/images/vibe-code-background.png");
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
@@ -84,16 +89,27 @@ const Page = styled.div`
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
-      radial-gradient(circle at 20% 80%, rgba(255, 97, 166, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(64, 244, 255, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(255, 145, 77, 0.05) 0%, transparent 50%);
+    background: radial-gradient(
+        circle at 20% 80%,
+        rgba(255, 97, 166, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(64, 244, 255, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(255, 145, 77, 0.05) 0%,
+        transparent 50%
+      );
     pointer-events: none;
   }
 `;
@@ -102,7 +118,7 @@ const Main = styled.main`
   max-width: 900px;
   text-align: center;
   z-index: 1;
-  
+
   @media (max-width: 768px) {
     max-width: 100%;
   }
@@ -113,7 +129,7 @@ const Hero = styled.div`
   flex-direction: column;
   gap: 2rem;
   margin-bottom: 3rem;
-  
+
   @media (max-width: 768px) {
     gap: 1.5rem;
     margin-bottom: 2rem;
@@ -125,7 +141,7 @@ const TitleImage = styled.div`
   position: relative;
   width: 100%;
   height: 100vh;
-  
+
   @media (max-width: 768px) {
     margin-bottom: 1.5rem;
     height: 250px;
@@ -139,7 +155,7 @@ const VibeImage = styled.div`
   width: 100%;
   height: 100%;
   z-index: 2;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -148,11 +164,10 @@ const VibeImage = styled.div`
     animation: ${neonTurnOn} 0.3s ease-in-out 0.5s forwards;
     filter: brightness(0) drop-shadow(0 0 0px rgba(255, 97, 166, 0));
     transition: all 0.3s ease;
-    
+
     @media (max-width: 768px) {
-      filter: 
-        brightness(1) drop-shadow(0 0 5px rgba(255, 97, 166, 0.8)) 
-        drop-shadow(0 0 10px rgba(255, 97, 166, 0.6)) 
+      filter: brightness(1) drop-shadow(0 0 5px rgba(255, 97, 166, 0.8))
+        drop-shadow(0 0 10px rgba(255, 97, 166, 0.6))
         drop-shadow(0 0 15px rgba(255, 97, 166, 0.4));
     }
   }
@@ -165,7 +180,7 @@ const CodeDetroitImage = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -174,11 +189,10 @@ const CodeDetroitImage = styled.div`
     animation: ${neonFlicker} 3s ease-in-out 1.5s forwards;
     filter: brightness(0) drop-shadow(0 0 0px rgba(64, 244, 255, 0));
     transition: all 0.3s ease;
-    
+
     @media (max-width: 768px) {
-      filter: 
-        brightness(1) drop-shadow(0 0 5px rgba(64, 244, 255, 0.8)) 
-        drop-shadow(0 0 10px rgba(64, 244, 255, 0.6)) 
+      filter: brightness(1) drop-shadow(0 0 5px rgba(64, 244, 255, 0.8))
+        drop-shadow(0 0 10px rgba(64, 244, 255, 0.6))
         drop-shadow(0 0 15px rgba(64, 244, 255, 0.4));
     }
   }
@@ -203,35 +217,31 @@ const ScrollIndicator = styled.div`
   animation: ${fadeIn} 1s ease-in-out 3s forwards;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   @media (max-width: 768px) {
     display: none;
   }
-  
+
   &:hover {
     transform: translateX(-50%) scale(1.1);
-    
+
     &::after {
       animation: ${scrollBounce} 1s ease-in-out infinite;
-      text-shadow: 
-        0 0 20px rgba(64, 244, 255, 1),
-        0 0 30px rgba(64, 244, 255, 0.8),
-        0 0 40px rgba(64, 244, 255, 0.6),
+      text-shadow: 0 0 20px rgba(64, 244, 255, 1),
+        0 0 30px rgba(64, 244, 255, 0.8), 0 0 40px rgba(64, 244, 255, 0.6),
         0 0 50px rgba(64, 244, 255, 0.4);
       filter: drop-shadow(0 0 12px rgba(64, 244, 255, 1));
     }
   }
-  
+
   &::after {
-    content: '⌄';
-    color: #40F4FF;
+    content: "⌄";
+    color: #40f4ff;
     font-size: 4rem;
     font-weight: bold;
     animation: ${scrollBounce} 1.5s ease-in-out infinite;
-    text-shadow: 
-      0 0 15px rgba(64, 244, 255, 0.8),
-      0 0 25px rgba(64, 244, 255, 0.6),
-      0 0 35px rgba(64, 244, 255, 0.4),
+    text-shadow: 0 0 15px rgba(64, 244, 255, 0.8),
+      0 0 25px rgba(64, 244, 255, 0.6), 0 0 35px rgba(64, 244, 255, 0.4),
       0 0 45px rgba(64, 244, 255, 0.2);
     filter: drop-shadow(0 0 8px rgba(64, 244, 255, 0.8));
     transition: all 0.3s ease;
@@ -241,11 +251,11 @@ const ScrollIndicator = styled.div`
 const Subtitle = styled.p`
   font-size: 1.4rem;
   line-height: 1.6;
-  color: #40F4FF;
+  color: #40f4ff;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 300;
-  
+
   @media (max-width: 768px) {
     font-size: 1.1rem;
     line-height: 1.5;
@@ -257,9 +267,9 @@ const Description = styled.p`
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.9);
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
-  
+
   @media (max-width: 768px) {
     font-size: 1rem;
     line-height: 1.6;
@@ -270,25 +280,23 @@ const Tagline = styled.div`
   margin-top: 2rem;
   padding: 1.5rem 2rem;
   background: rgba(255, 97, 166, 0.1);
-  border: 2px solid #FF61A6;
+  border: 2px solid #ff61a6;
   border-radius: 20px;
-  box-shadow: 
-    0 0 10px rgba(255, 97, 166, 0.3),
+  box-shadow: 0 0 10px rgba(255, 97, 166, 0.3),
     inset 0 0 10px rgba(255, 97, 166, 0.1);
   transition: all 0.3s ease;
-  
+
   @media (max-width: 768px) {
     margin-top: 1.5rem;
     padding: 1rem 1.5rem;
     border-radius: 15px;
   }
-  
+
   &:hover {
-    box-shadow: 
-      0 0 15px rgba(255, 97, 166, 0.5),
+    box-shadow: 0 0 15px rgba(255, 97, 166, 0.5),
       inset 0 0 15px rgba(255, 97, 166, 0.2);
     transform: scale(1.02);
-    
+
     @media (max-width: 768px) {
       transform: none;
     }
@@ -298,11 +306,11 @@ const Tagline = styled.div`
 const TaglineText = styled.span`
   font-size: 1.3rem;
   font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  color: #FF61A6;
+  font-family: "Poppins", sans-serif;
+  color: #ff61a6;
   text-transform: uppercase;
   letter-spacing: 2px;
-  
+
   @media (max-width: 768px) {
     font-size: 0.9rem;
     letter-spacing: 1px;
@@ -319,7 +327,7 @@ const Footer = styled.footer`
   padding: 1.5rem;
   border-radius: 20px;
   border: 1px solid rgba(64, 244, 255, 0.2);
-  
+
   @media (max-width: 768px) {
     gap: 1rem;
   }
@@ -331,14 +339,14 @@ const FooterLink = styled.a`
   gap: 0.5rem;
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
   transition: all 0.3s ease;
   padding: 0.5rem 1rem;
   border-radius: 25px;
-  
+
   &:hover {
-    color: #40F4FF;
+    color: #40f4ff;
     background: rgba(64, 244, 255, 0.1);
     box-shadow: 0 0 8px rgba(64, 244, 255, 0.3);
   }
@@ -348,26 +356,24 @@ const EventCard = styled.div`
   margin: 2rem 0;
   padding: 2rem;
   background: rgba(27, 20, 100, 0.4);
-  border: 2px solid #40F4FF;
+  border: 2px solid #40f4ff;
   border-radius: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 
-    0 0 20px rgba(64, 244, 255, 0.3),
+  box-shadow: 0 0 20px rgba(64, 244, 255, 0.3),
     inset 0 0 20px rgba(64, 244, 255, 0.1);
   transition: all 0.3s ease;
-  
+
   @media (max-width: 768px) {
     margin: 1.5rem 0;
     padding: 1.5rem;
     border-radius: 15px;
   }
-  
+
   &:hover {
-    box-shadow: 
-      0 0 30px rgba(64, 244, 255, 0.5),
+    box-shadow: 0 0 30px rgba(64, 244, 255, 0.5),
       inset 0 0 30px rgba(64, 244, 255, 0.2);
     transform: scale(1.02);
-    
+
     @media (max-width: 768px) {
       transform: none;
     }
@@ -377,13 +383,13 @@ const EventCard = styled.div`
 const EventTitle = styled.h2`
   font-size: 2rem;
   font-weight: 700;
-  color: #FF61A6;
+  color: #ff61a6;
   margin: 0 0 1rem 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 2px;
-  
+
   @media (max-width: 768px) {
     font-size: 1.1rem;
     letter-spacing: 1px;
@@ -393,12 +399,12 @@ const EventTitle = styled.h2`
 
 const EventDate = styled.div`
   font-size: 1.3rem;
-  color: #40F4FF;
+  color: #40f4ff;
   font-weight: 600;
   text-align: center;
   margin-bottom: 1rem;
-  font-family: 'Poppins', sans-serif;
-  
+  font-family: "Poppins", sans-serif;
+
   @media (max-width: 768px) {
     font-size: 1.1rem;
     margin-bottom: 0.8rem;
@@ -407,12 +413,12 @@ const EventDate = styled.div`
 
 const EventLocation = styled.div`
   font-size: 1.1rem;
-  color: #FF914D;
+  color: #ff914d;
   font-weight: 500;
   text-align: center;
   margin-bottom: 1.5rem;
-  font-family: 'Poppins', sans-serif;
-  
+  font-family: "Poppins", sans-serif;
+
   @media (max-width: 768px) {
     font-size: 1rem;
     margin-bottom: 1.2rem;
@@ -424,8 +430,8 @@ const EventDescription = styled.p`
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
   margin: 0 0 1.5rem 0;
-  font-family: 'Poppins', sans-serif;
-  
+  font-family: "Poppins", sans-serif;
+
   @media (max-width: 768px) {
     font-size: 0.95rem;
     line-height: 1.5;
@@ -435,15 +441,16 @@ const EventDescription = styled.p`
 
 export default function Home() {
   const handleScrollClick = () => {
-    const arrow = document.querySelector('[data-scroll-indicator]');
+    const arrow = document.querySelector("[data-scroll-indicator]");
     if (arrow) {
       const arrowRect = arrow.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       const targetScroll = scrollTop + arrowRect.bottom + 20; // 20px buffer above the arrow
-      
+
       window.scrollTo({
         top: targetScroll,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   };
@@ -452,24 +459,48 @@ export default function Home() {
     <>
       <Head>
         <title>Vibe Code Detroit - Community of Tech Enthusiasts</title>
-        <meta name="description" content="Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding." />
+        <meta
+          name="description"
+          content="Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding."
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-        
+        <link
+          href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://vibecodedetroit.com/" />
-        <meta property="og:title" content="Vibe Code Detroit - Community of Tech Enthusiasts" />
-        <meta property="og:description" content="Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding." />
-        <meta property="og:image" content="/images/vibe-code-detroit-featured.png" />
-        
+        <meta
+          property="og:title"
+          content="Vibe Code Detroit - Community of Tech Enthusiasts"
+        />
+        <meta
+          property="og:description"
+          content="Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding."
+        />
+        <meta
+          property="og:image"
+          content="/images/vibe-code-detroit-featured.png"
+        />
+
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://vibecodedetroit.com/" />
-        <meta property="twitter:title" content="Vibe Code Detroit - Community of Tech Enthusiasts" />
-        <meta property="twitter:description" content="Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding." />
-        <meta property="twitter:image" content="/images/vibe-code-detroit-featured.png" />
+        <meta
+          property="twitter:title"
+          content="Vibe Code Detroit - Community of Tech Enthusiasts"
+        />
+        <meta
+          property="twitter:description"
+          content="Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding."
+        />
+        <meta
+          property="twitter:image"
+          content="/images/vibe-code-detroit-featured.png"
+        />
       </Head>
       <Page>
         <Main>
@@ -493,13 +524,23 @@ export default function Home() {
                   priority
                 />
               </CodeDetroitImage>
-                              <ScrollIndicator onClick={handleScrollClick} data-scroll-indicator />
+              <ScrollIndicator
+                onClick={handleScrollClick}
+                data-scroll-indicator
+              />
             </TitleImage>
             <Subtitle>
-              Vibe Code Detroit is a community of tech enthusiasts and creators coming together to build meaningful solutions through Vibe Coding. Our goal is simple: leverage technology to foster genuine connections, empower local initiatives, and nurture a supportive ecosystem rooted deeply in community values.
+              Vibe Code Detroit is a community of tech enthusiasts and creators
+              coming together to build meaningful solutions through Vibe Coding.
+              Our goal is simple: leverage technology to foster genuine
+              connections, empower local initiatives, and nurture a supportive
+              ecosystem rooted deeply in community values.
             </Subtitle>
             <Description>
-              Whether you&apos;re a developer, a designer, or simply tech-curious, join us as we explore collaborative coding sessions, workshops, and projects designed to uplift Detroit through innovation and creativity.
+              Whether you&apos;re a developer, a designer, or simply
+              tech-curious, join us as we explore collaborative coding sessions,
+              workshops, and projects designed to uplift Detroit through
+              innovation and creativity.
             </Description>
             <Tagline>
               <TaglineText>Together, let&apos;s code the vibe.</TaglineText>
@@ -507,37 +548,36 @@ export default function Home() {
           </Hero>
 
           <EventCard>
-            <EventTitle>Next Vibe Coding Meetup</EventTitle>
-            <EventDate>August 11th</EventDate>
+            <EventTitle>AI in Software Development Workshop</EventTitle>
+            <EventDate>August 20th</EventDate>
             <EventLocation>📍 Bamboo Royal Oak</EventLocation>
-            
+
             <EventDescription>
-              Join us for our Vibe Coding meetup! Bring your projects or learn from others. Perfect for both beginners and experienced vibe coders.
+              Join us for a hands-on, collaborative workshop that explores how AI is reshaping software development, led by senior software engineers who will show you how AI is transforming developer workflows—shifting roles from coding everything to managing agents. Participants will get hands-on experience building an app with AI tools, with free dinner & drinks provided!
             </EventDescription>
-            
-            {/* <EventSpeaker>
-              🎤 David &quot;Stock&quot; Baird
-            </EventSpeaker> */}
-            
-            {/* <EventTopics>
-              <li>Origins of Vibe Coding</li>
-              <li>Latest Updates & Best Practices</li>
-              <li>MySALT AI & Vibe Coded Projects</li>
-              <li>Q&A & Networking</li>
-            </EventTopics> */}
-            
-            {/* <EventSponsors>
-              Hosted by Bamboo Royal Oak • Sponsored by Baird Tech & MySALT AI
-            </EventSponsors> */}
-            
-            {/* <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-              <EventLink href="https://mysalt.ai/vibe-coding" target="_blank" rel="noopener noreferrer">
-                Join Our Free Vibe Coding Hub
-              </EventLink>
-            </div> */}
+
+            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+              <Link href="/ai-workshop" style={{
+                display: 'inline-block',
+                padding: '0.75rem 1.5rem',
+                backgroundColor: 'rgba(255, 97, 166, 0.2)',
+                color: '#ff61a6',
+                textDecoration: 'none',
+                borderRadius: '25px',
+                fontFamily: '"Poppins", sans-serif',
+                fontWeight: '600',
+                border: '2px solid #ff61a6',
+                transition: 'all 0.3s ease',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                fontSize: '0.9rem'
+              }}>
+                Learn More
+              </Link>
+            </div>
           </EventCard>
 
-          <EmailCapture 
+          <EmailCapture
             title="Stay in the Vibe"
             subtitle="Get notified about upcoming meetups, workshops, and community events."
             placeholder="Enter your email to stay connected"
@@ -554,9 +594,7 @@ export default function Home() {
           </CTAs> */}
         </Main>
         <Footer>
-          <FooterLink href="/roadmap">
-            🗺️ Development Roadmap
-          </FooterLink>
+          <FooterLink href="/roadmap">🗺️ Development Roadmap</FooterLink>
         </Footer>
       </Page>
     </>
