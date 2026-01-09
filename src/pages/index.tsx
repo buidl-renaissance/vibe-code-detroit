@@ -1,8 +1,26 @@
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import EmailCapture from "../components/EmailCapture";
+import { useEffect, useState } from "react";
+
+interface MeetupEvent {
+  id: number;
+  eventId: string;
+  title: string;
+  description: string;
+  dateTime: string;
+  venue: {
+    address: string;
+    city: string;
+    name: string;
+    state: string;
+  } | null;
+  eventUrl: string;
+  group: {
+    name: string;
+  };
+}
 
 const neonTurnOn = keyframes`
   0% {
@@ -278,42 +296,22 @@ const Description = styled.p`
 
 const Tagline = styled.div`
   margin-top: 2rem;
-  padding: 1.5rem 2rem;
-  background: rgba(255, 97, 166, 0.1);
-  border: 2px solid #ff61a6;
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(255, 97, 166, 0.3),
-    inset 0 0 10px rgba(255, 97, 166, 0.1);
-  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
     margin-top: 1.5rem;
-    padding: 1rem 1.5rem;
-    border-radius: 15px;
-  }
-
-  &:hover {
-    box-shadow: 0 0 15px rgba(255, 97, 166, 0.5),
-      inset 0 0 15px rgba(255, 97, 166, 0.2);
-    transform: scale(1.02);
-
-    @media (max-width: 768px) {
-      transform: none;
-    }
   }
 `;
 
 const TaglineText = styled.span`
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: 1.4rem;
+  font-weight: 500;
   font-family: "Poppins", sans-serif;
   color: #ff61a6;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  font-style: italic;
+  text-shadow: 0 0 20px rgba(255, 97, 166, 0.4);
 
   @media (max-width: 768px) {
-    font-size: 0.9rem;
-    letter-spacing: 1px;
+    font-size: 1.1rem;
   }
 `;
 
@@ -439,7 +437,164 @@ const EventDescription = styled.p`
   }
 `;
 
+const EventsSection = styled.section`
+  margin: 3rem 0;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #40f4ff;
+  margin: 0 0 2rem 0;
+  font-family: "Orbitron", sans-serif;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(64, 244, 255, 0.5),
+    0 0 20px rgba(64, 244, 255, 0.3);
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    margin: 0 0 1.5rem 0;
+  }
+`;
+
+const EventsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
+const LoadingText = styled.p`
+  font-size: 1.2rem;
+  color: #40f4ff;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  animation: pulse 1.5s ease-in-out infinite;
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+`;
+
+const NoEventsText = styled.p`
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  padding: 2rem;
+  background: rgba(27, 20, 100, 0.3);
+  border-radius: 15px;
+  border: 1px solid rgba(64, 244, 255, 0.2);
+`;
+
+const EventButton = styled.a`
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(64, 244, 255, 0.2);
+  color: #40f4ff;
+  text-decoration: none;
+  border-radius: 25px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  border: 2px solid #40f4ff;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+
+  &:hover {
+    background-color: rgba(64, 244, 255, 0.4);
+    box-shadow: 0 0 15px rgba(64, 244, 255, 0.5);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
+  }
+`;
+
+const GroupName = styled.div`
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+`;
+
+// Filter function for vibe coding events
+const isVibeCodingEvent = (event: MeetupEvent): boolean => {
+  const titleLower = event.title.toLowerCase();
+  const descLower = event.description.toLowerCase();
+  const groupLower = event.group?.name?.toLowerCase() || "";
+  
+  // Primary terms - events should match these closely
+  const primaryTerms = ["vibe code", "vibe coding", "vibecode"];
+  
+  // Secondary terms - coding/programming specific
+  const codingTerms = ["coding", "programming", "developer", "software development", "hackathon", "code along", "web development", "app development"];
+  
+  // Tech groups that are likely relevant
+  const techGroupTerms = ["code", "developer", "programming", "tech", "software", "hacker"];
+  
+  // Check if it's explicitly a vibe coding event
+  const isPrimaryMatch = primaryTerms.some(term => 
+    titleLower.includes(term) || descLower.includes(term) || groupLower.includes(term)
+  );
+  
+  // Check if it's a coding-related event from a tech group
+  const isCodingEvent = codingTerms.some(term => 
+    titleLower.includes(term) || descLower.includes(term)
+  );
+  
+  const isFromTechGroup = techGroupTerms.some(term => groupLower.includes(term));
+  
+  return isPrimaryMatch || isCodingEvent || isFromTechGroup;
+};
+
+// Format date for display
+const formatEventDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  });
+};
+
 export default function Home() {
+  const [events, setEvents] = useState<MeetupEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/meetup-events');
+        if (!response.ok) {
+          throw new Error('Failed to fetch events');
+        }
+        const data = await response.json();
+        const filteredEvents = data.events.filter(isVibeCodingEvent);
+        setEvents(filteredEvents);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load events');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   const handleScrollClick = () => {
     const arrow = document.querySelector("[data-scroll-indicator]");
     if (arrow) {
@@ -547,35 +702,43 @@ export default function Home() {
             </Tagline>
           </Hero>
 
-          <EventCard>
-            <EventTitle>AI in Software Development Workshop</EventTitle>
-            <EventDate>August 20th</EventDate>
-            <EventLocation>📍 Bamboo Royal Oak</EventLocation>
-
-            <EventDescription>
-              Join us for a hands-on, collaborative workshop that explores how AI is reshaping software development, led by senior software engineers who will show you how AI is transforming developer workflows—shifting roles from coding everything to managing agents. Participants will get hands-on experience building an app with AI tools, with free dinner & drinks provided!
-            </EventDescription>
-
-            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-              <Link href="/ai-workshop" style={{
-                display: 'inline-block',
-                padding: '0.75rem 1.5rem',
-                backgroundColor: 'rgba(255, 97, 166, 0.2)',
-                color: '#ff61a6',
-                textDecoration: 'none',
-                borderRadius: '25px',
-                fontFamily: '"Poppins", sans-serif',
-                fontWeight: '600',
-                border: '2px solid #ff61a6',
-                transition: 'all 0.3s ease',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                fontSize: '0.9rem'
-              }}>
-                Learn More
-              </Link>
-            </div>
-          </EventCard>
+          <EventsSection>
+            <SectionTitle>Upcoming Events</SectionTitle>
+            {loading ? (
+              <LoadingText>Loading events...</LoadingText>
+            ) : error || events.length === 0 ? (
+              <NoEventsText>No upcoming events — stay tuned!</NoEventsText>
+            ) : (
+              <EventsList>
+                {events.map((event) => (
+                  <EventCard key={event.eventId}>
+                    <GroupName>{event.group?.name}</GroupName>
+                    <EventTitle>{event.title}</EventTitle>
+                    <EventDate>{formatEventDate(event.dateTime)}</EventDate>
+                    {event.venue && (
+                      <EventLocation>
+                        📍 {event.venue.name}, {event.venue.city}, {event.venue.state}
+                      </EventLocation>
+                    )}
+                    <EventDescription>
+                      {event.description.length > 300 
+                        ? `${event.description.substring(0, 300)}...` 
+                        : event.description}
+                    </EventDescription>
+                    <div style={{ textAlign: 'center' }}>
+                      <EventButton 
+                        href={event.eventUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        View Event →
+                      </EventButton>
+                    </div>
+                  </EventCard>
+                ))}
+              </EventsList>
+            )}
+          </EventsSection>
 
           <EmailCapture
             title="Stay in the Vibe"

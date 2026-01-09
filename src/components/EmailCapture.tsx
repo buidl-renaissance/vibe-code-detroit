@@ -1,103 +1,159 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const glowPulse = keyframes`
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(64, 244, 255, 0.3), inset 0 0 20px rgba(64, 244, 255, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(64, 244, 255, 0.5), inset 0 0 25px rgba(64, 244, 255, 0.1);
+  }
+`;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  gap: 1.5rem;
+  padding: 2.5rem 2rem;
+  background: rgba(27, 20, 100, 0.4);
+  border-radius: 20px;
+  border: 2px solid rgba(64, 244, 255, 0.3);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: ${glowPulse} 4s ease-in-out infinite;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+  }
 `;
 
 const Title = styled.h2`
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 600;
+  color: #40f4ff;
+  font-size: 1.8rem;
+  font-weight: 700;
   margin: 0;
   text-align: center;
+  font-family: "Orbitron", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(64, 244, 255, 0.5);
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+  }
 `;
 
 const Subtitle = styled.p`
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
   margin: 0;
   text-align: center;
   max-width: 400px;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.5;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Form = styled.form`
-  display: flex;
-  gap: 0.5rem;
   width: 100%;
-  max-width: 400px;
-  flex-wrap: wrap;
-  justify-content: center;
+  max-width: 500px;
+`;
+
+const InputWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 97, 166, 0.4);
+  border-radius: 50px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    border-color: #ff61a6;
+    box-shadow: 0 0 20px rgba(255, 97, 166, 0.3);
+  }
 `;
 
 const Input = styled.input`
   flex: 1;
-  min-width: 250px;
-  padding: 0.75rem 1rem;
+  padding: 1rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  background: transparent;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
-  transition: all 0.2s ease;
+  color: white;
+  font-family: "Poppins", sans-serif;
 
   &:focus {
     outline: none;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
   }
 
   &::placeholder {
-    color: #666;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
   }
 `;
 
 const Button = styled.button`
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.75rem;
+  margin: 0.35rem;
   border: none;
-  border-radius: 8px;
-  background: #4f46e5;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #ff61a6 0%, #ff914d 100%);
   color: white;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 
-  &:hover {
-    background: #4338ca;
-    transform: translateY(-1px);
+  &:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 97, 166, 0.5);
   }
 
-  &:active {
-    transform: translateY(0);
+  &:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
   &:disabled {
-    background: #6b7280;
+    opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
   }
 `;
 
-const Message = styled.div<{ type: 'success' | 'error' }>`
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
+const Message = styled.div<{ $type: 'success' | 'error' }>`
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
   font-weight: 500;
   text-align: center;
-  background: ${props => props.type === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'};
-  color: ${props => props.type === 'success' ? '#22c55e' : '#ef4444'};
-  border: 1px solid ${props => props.type === 'success' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
+  font-family: "Poppins", sans-serif;
+  background: ${props => props.$type === 'success' 
+    ? 'rgba(64, 244, 255, 0.1)' 
+    : 'rgba(255, 97, 166, 0.1)'};
+  color: ${props => props.$type === 'success' ? '#40f4ff' : '#ff61a6'};
+  border: 1px solid ${props => props.$type === 'success' 
+    ? 'rgba(64, 244, 255, 0.3)' 
+    : 'rgba(255, 97, 166, 0.3)'};
 `;
 
 interface EmailCaptureProps {
@@ -147,7 +203,7 @@ export default function EmailCapture({
         setStatus('error');
         setMessage(data.error || 'Something went wrong');
       }
-    } catch (error) {
+    } catch {
       setStatus('error');
       setMessage('Network error. Please try again.');
     }
@@ -159,25 +215,27 @@ export default function EmailCapture({
       <Subtitle>{subtitle}</Subtitle>
       
       <Form onSubmit={handleSubmit}>
-        <Input
-          type="email"
-          placeholder={placeholder}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={status === 'loading'}
-          required
-        />
-        <Button type="submit" disabled={status === 'loading'}>
-          {status === 'loading' ? 'Subscribing...' : buttonText}
-        </Button>
+        <InputWrapper>
+          <Input
+            type="email"
+            placeholder={placeholder}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={status === 'loading'}
+            required
+          />
+          <Button type="submit" disabled={status === 'loading'}>
+            {status === 'loading' ? '...' : buttonText}
+          </Button>
+        </InputWrapper>
       </Form>
 
       {status === 'success' && (
-        <Message type="success">{message}</Message>
+        <Message $type="success">{message}</Message>
       )}
       
       {status === 'error' && (
-        <Message type="error">{message}</Message>
+        <Message $type="error">{message}</Message>
       )}
     </Container>
   );
