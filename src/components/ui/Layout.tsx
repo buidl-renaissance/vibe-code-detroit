@@ -1,5 +1,11 @@
 import styled, { css } from "styled-components";
-import { glowPulse, neonTurnOn, neonFlicker, scrollBounce, fadeIn } from "../../styles/animations";
+import {
+  glowPulse,
+  neonTurnOn,
+  neonFlicker,
+  scrollBounce,
+  fadeIn,
+} from "../../styles/animations";
 
 // ============================================
 // PAGE LAYOUT
@@ -31,7 +37,8 @@ export const Page = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
+    background:
+      radial-gradient(
         circle at 20% 80%,
         rgba(255, 97, 166, 0.15) 0%,
         transparent 50%
@@ -159,8 +166,10 @@ export const ScrollIndicator = styled.div`
 
     &::after {
       animation: ${scrollBounce} 1s ease-in-out infinite;
-      text-shadow: 0 0 20px rgba(64, 244, 255, 1),
-        0 0 30px rgba(64, 244, 255, 0.8), 0 0 40px rgba(64, 244, 255, 0.6),
+      text-shadow:
+        0 0 20px rgba(64, 244, 255, 1),
+        0 0 30px rgba(64, 244, 255, 0.8),
+        0 0 40px rgba(64, 244, 255, 0.6),
         0 0 50px rgba(64, 244, 255, 0.4);
       filter: drop-shadow(0 0 12px rgba(64, 244, 255, 1));
     }
@@ -172,8 +181,10 @@ export const ScrollIndicator = styled.div`
     font-size: 4rem;
     font-weight: bold;
     animation: ${scrollBounce} 1.5s ease-in-out infinite;
-    text-shadow: 0 0 15px rgba(64, 244, 255, 0.8),
-      0 0 25px rgba(64, 244, 255, 0.6), 0 0 35px rgba(64, 244, 255, 0.4),
+    text-shadow:
+      0 0 15px rgba(64, 244, 255, 0.8),
+      0 0 25px rgba(64, 244, 255, 0.6),
+      0 0 35px rgba(64, 244, 255, 0.4),
       0 0 45px rgba(64, 244, 255, 0.2);
     filter: drop-shadow(0 0 8px rgba(64, 244, 255, 0.8));
     transition: all 0.3s ease;
@@ -183,6 +194,20 @@ export const ScrollIndicator = styled.div`
 // ============================================
 // TEXT COMPONENTS
 // ============================================
+
+export const HeroTextContainer = styled.div`
+  background: rgba(15, 10, 45, 0.65);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  border: 1px solid rgba(64, 244, 255, 0.15);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+`;
 
 export const Subtitle = styled.p`
   font-size: 1.4rem;
@@ -242,7 +267,8 @@ export const SectionTitle = styled.h2`
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 3px;
-  text-shadow: 0 0 10px rgba(64, 244, 255, 0.5),
+  text-shadow:
+    0 0 10px rgba(64, 244, 255, 0.5),
     0 0 20px rgba(64, 244, 255, 0.3);
 
   @media (max-width: 768px) {
@@ -256,10 +282,15 @@ export const SectionTitle = styled.h2`
 // SCROLL REVEAL
 // ============================================
 
-export const RevealOnScroll = styled.div<{ $isVisible: boolean; $delay?: number }>`
+export const RevealOnScroll = styled.div<{
+  $isVisible: boolean;
+  $delay?: number;
+}>`
   opacity: 0;
   transform: translateY(60px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transition:
+    opacity 0.8s ease-out,
+    transform 0.8s ease-out;
   transition-delay: ${(props) => props.$delay || 0}s;
 
   ${(props) =>
@@ -422,49 +453,114 @@ export const WhatIsVibeSection = styled.section`
 export const VibeGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 2.5rem;
   margin-top: 2rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
+    max-width: 500px;
+    margin: 2rem auto 0;
   }
 `;
 
 export const VibeCard = styled.div<{ $borderColor: string }>`
-  padding: 2rem;
-  background: rgba(27, 20, 100, 0.5);
-  border-radius: 20px;
-  border: 2px solid ${(props) => props.$borderColor};
-  backdrop-filter: blur(10px);
+  padding: 2.5rem 2rem;
+  background: linear-gradient(
+    165deg,
+    rgba(35, 25, 90, 0.8) 0%,
+    rgba(20, 15, 60, 0.9) 50%,
+    rgba(15, 10, 45, 0.95) 100%
+  );
+  border-radius: 24px;
+  border: 1px solid ${(props) => props.$borderColor}60;
+  backdrop-filter: blur(20px);
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+  contain: layout style;
 
+  /* Top gradient glow */
   &::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
+    height: 120px;
     background: radial-gradient(
-      circle at 50% 0%,
-      ${(props) => props.$borderColor}20 0%,
+      ellipse 80% 50% at 50% 0%,
+      ${(props) => props.$borderColor}30 0%,
+      ${(props) => props.$borderColor}10 40%,
       transparent 70%
     );
     pointer-events: none;
+    transition: all 0.4s ease;
+  }
+
+  /* Animated border glow */
+  &::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+      135deg,
+      ${(props) => props.$borderColor} 0%,
+      transparent 30%,
+      transparent 70%,
+      ${(props) => props.$borderColor}80 100%
+    );
+    border-radius: 26px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px ${(props) => props.$borderColor}40;
+    transform: translateY(-12px) scale(1.02) rotateX(2deg);
+    border-color: ${(props) => props.$borderColor};
+    box-shadow:
+      0 20px 50px ${(props) => props.$borderColor}35,
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 0 1px ${(props) => props.$borderColor}40 inset,
+      0 0 80px ${(props) => props.$borderColor}15;
+
+    &::before {
+      height: 150px;
+      background: radial-gradient(
+        ellipse 100% 60% at 50% 0%,
+        ${(props) => props.$borderColor}50 0%,
+        ${(props) => props.$borderColor}20 40%,
+        transparent 70%
+      );
+    }
+
+    &::after {
+      opacity: 0.6;
+    }
   }
 
   @media (max-width: 768px) {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
 
+    &:hover {
+      transform: translateY(-6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
     &:hover {
       transform: none;
     }
@@ -472,40 +568,78 @@ export const VibeCard = styled.div<{ $borderColor: string }>`
 `;
 
 export const VibeIcon = styled.div`
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 1rem auto;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 1.5rem auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 1;
+
+  /* Glow ring behind icon */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.08) 0%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    z-index: -1;
+  }
 
   svg {
     width: 100%;
     height: 100%;
+    filter: drop-shadow(0 0 12px currentColor);
+    transition: all 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    width: 72px;
+    height: 72px;
+
+    &::before {
+      width: 84px;
+      height: 84px;
+    }
   }
 `;
 
 export const VibeCardTitle = styled.h3`
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #40f4ff;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
   font-family: "Poppins", sans-serif;
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 `;
 
 export const VibeCardText = styled.p`
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
   margin: 0;
   font-family: "Poppins", sans-serif;
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 `;
 
@@ -602,7 +736,8 @@ export const EventCard = styled.div`
   border: 2px solid #40f4ff;
   border-radius: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 0 20px rgba(64, 244, 255, 0.3),
+  box-shadow:
+    0 0 20px rgba(64, 244, 255, 0.3),
     inset 0 0 20px rgba(64, 244, 255, 0.1);
   transition: all 0.3s ease;
 
@@ -613,7 +748,8 @@ export const EventCard = styled.div`
   }
 
   &:hover {
-    box-shadow: 0 0 30px rgba(64, 244, 255, 0.5),
+    box-shadow:
+      0 0 30px rgba(64, 244, 255, 0.5),
       inset 0 0 30px rgba(64, 244, 255, 0.2);
     transform: scale(1.02);
 

@@ -255,13 +255,7 @@ export const LeftPalmTree: React.FC = () => (
     <ellipse cx="115" cy="124" rx="11" ry="10" fill="url(#coconutGrad1)" />
     <ellipse cx="112" cy="121" rx="3" ry="2" fill="rgba(90, 70, 50, 0.5)" />
     <ellipse cx="106" cy="131" rx="9" ry="8" fill="url(#coconutGrad2)" />
-    <ellipse
-      cx="103"
-      cy="128"
-      rx="2.5"
-      ry="1.8"
-      fill="rgba(80, 60, 45, 0.4)"
-    />
+    <ellipse cx="103" cy="128" rx="2.5" ry="1.8" fill="rgba(80, 60, 45, 0.4)" />
     <ellipse cx="124" cy="130" rx="8" ry="7" fill="url(#coconutGrad1)" />
     <ellipse cx="121" cy="127" rx="2" ry="1.5" fill="rgba(85, 65, 48, 0.45)" />
     <ellipse cx="117" cy="135" rx="6" ry="5.5" fill="url(#coconutGrad2)" />
@@ -606,53 +600,83 @@ export const RightPalmTree: React.FC = () => (
 
 export const Mountains: React.FC = () => (
   <MountainsContainer>
-    <MountainsSVG viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice">
-      {/* Background mountains */}
+    <MountainsSVG viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice">
+      {/* Far background mountains */}
       <path
-        d="M0 300 L0 180 L80 130 L120 160 L180 95 L240 140 L320 70 L380 120 L460 55 L520 100 L600 45 L680 90 L760 35 L840 85 L920 50 L1000 110 L1080 65 L1140 120 L1200 85 L1200 300 Z"
-        fill="rgba(70, 35, 100, 0.35)"
+        d="M0 400 L0 280 L60 240 L100 265 L160 200 L220 250 L300 170 L380 230 L480 140 L560 200 L660 120 L740 180 L840 100 L920 160 L1020 90 L1100 150 L1200 110 L1200 400 Z"
+        fill="rgba(90, 50, 120, 0.3)"
       />
 
-      {/* Mid mountains */}
+      {/* Background mountains */}
+      <path
+        d="M0 400 L0 260 L80 190 L120 230 L180 155 L240 200 L320 120 L380 175 L460 95 L520 150 L600 75 L680 130 L760 60 L840 115 L920 70 L1000 140 L1080 85 L1140 145 L1200 105 L1200 400 Z"
+        fill="rgba(70, 35, 100, 0.4)"
+      />
+
+      {/* Mid mountains with gradients */}
       <defs>
         <linearGradient id="snowCapGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(255, 255, 255, 0.95)" />
-          <stop offset="25%" stopColor="rgba(230, 240, 255, 0.85)" />
-          <stop offset="50%" stopColor="rgba(180, 200, 230, 0.6)" />
-          <stop offset="100%" stopColor="rgba(90, 60, 110, 0.7)" />
+          <stop offset="0%" stopColor="rgba(255, 255, 255, 0.98)" />
+          <stop offset="20%" stopColor="rgba(240, 248, 255, 0.9)" />
+          <stop offset="45%" stopColor="rgba(200, 220, 245, 0.7)" />
+          <stop offset="100%" stopColor="rgba(100, 70, 130, 0.6)" />
         </linearGradient>
-        <linearGradient id="rockyMountainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(80, 50, 90, 0.7)" />
-          <stop offset="100%" stopColor="rgba(60, 35, 75, 0.8)" />
+        <linearGradient
+          id="rockyMountainGrad"
+          x1="0%"
+          y1="0%"
+          x2="0%"
+          y2="100%"
+        >
+          <stop offset="0%" stopColor="rgba(90, 60, 110, 0.75)" />
+          <stop offset="100%" stopColor="rgba(60, 35, 75, 0.85)" />
+        </linearGradient>
+        <linearGradient id="deepMountainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(70, 45, 95, 0.8)" />
+          <stop offset="100%" stopColor="rgba(45, 25, 65, 0.9)" />
         </linearGradient>
       </defs>
 
       {/* Left rocky peaks */}
       <path
-        d="M0 300 L0 200 L60 160 L100 190 L160 130 L220 175 L280 110 L340 165 L400 300 Z"
+        d="M0 400 L0 280 L60 220 L100 260 L160 180 L220 235 L280 150 L340 210 L400 400 Z"
         fill="url(#rockyMountainGrad)"
       />
 
-      {/* CENTER: Large snow-capped peak */}
+      {/* CENTER: Large snow-capped peak - MAIN FOCAL POINT */}
       <path
-        d="M380 300 L450 180 L500 140 L550 85 L600 40 L650 85 L700 140 L750 180 L820 300 Z"
-        fill="rgba(75, 50, 95, 0.75)"
+        d="M350 400 L420 250 L480 180 L540 110 L600 45 L660 110 L720 180 L780 250 L850 400 Z"
+        fill="url(#deepMountainGrad)"
       />
-      {/* Snow cap */}
+      {/* Snow cap - larger and more detailed */}
       <path
-        d="M520 120 L550 85 L600 40 L650 85 L680 120 L655 115 L630 95 L600 70 L570 95 L545 115 Z"
+        d="M500 160 L540 110 L600 45 L660 110 L700 160 L670 150 L640 120 L600 80 L560 120 L530 150 Z"
         fill="url(#snowCapGradient)"
       />
-      {/* Snow streaks */}
+      {/* Snow streaks on sides */}
       <path
-        d="M560 110 L570 140 L555 160 L565 190"
+        d="M545 145 L555 185 L540 220 L550 265"
+        fill="none"
+        stroke="rgba(255, 255, 255, 0.35)"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M655 145 L645 190 L660 230 L650 280"
         fill="none"
         stroke="rgba(255, 255, 255, 0.3)"
         strokeWidth="8"
         strokeLinecap="round"
       />
       <path
-        d="M640 110 L630 145 L645 170 L635 200"
+        d="M580 130 L575 175 L585 210"
+        fill="none"
+        stroke="rgba(255, 255, 255, 0.25)"
+        strokeWidth="6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M620 130 L625 175 L615 215"
         fill="none"
         stroke="rgba(255, 255, 255, 0.25)"
         strokeWidth="6"
@@ -661,14 +685,25 @@ export const Mountains: React.FC = () => (
 
       {/* Right rocky peaks */}
       <path
-        d="M800 300 L860 165 L920 110 L980 160 L1040 120 L1100 175 L1140 140 L1200 190 L1200 300 Z"
+        d="M820 400 L880 210 L940 145 L1000 200 L1060 155 L1120 220 L1160 175 L1200 235 L1200 400 Z"
         fill="url(#rockyMountainGrad)"
       />
 
-      {/* Foreground mountains */}
+      {/* Secondary snow-capped peak on right */}
       <path
-        d="M0 300 L0 230 L40 200 L80 225 L130 180 L180 215 L240 165 L300 210 L370 175 L430 220 L500 185 L560 215 L620 175 L680 210 L740 170 L800 205 L860 165 L920 200 L980 175 L1040 210 L1100 180 L1160 215 L1200 190 L1200 300 Z"
-        fill="rgba(20, 10, 35, 0.9)"
+        d="M920 400 L970 250 L1020 180 L1060 130 L1100 180 L1150 250 L1200 400 Z"
+        fill="url(#deepMountainGrad)"
+      />
+      <path
+        d="M1000 165 L1020 180 L1060 130 L1100 180 L1120 165 L1095 155 L1060 145 L1025 155 Z"
+        fill="url(#snowCapGradient)"
+        opacity="0.85"
+      />
+
+      {/* Foreground mountains - darkest silhouette */}
+      <path
+        d="M0 400 L0 310 L40 280 L80 305 L130 255 L180 290 L240 235 L300 275 L370 240 L430 285 L500 250 L560 280 L620 240 L680 275 L740 235 L800 270 L860 230 L920 265 L980 240 L1040 275 L1100 245 L1160 280 L1200 255 L1200 400 Z"
+        fill="rgba(15, 8, 30, 0.95)"
       />
     </MountainsSVG>
   </MountainsContainer>

@@ -6,8 +6,13 @@ import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 // Background scene components
 import {
   SkyOverlay,
+  HorizonGlow,
   StarsContainer,
   Star,
+  ShootingStarsContainer,
+  ShootingStar,
+  FirefliesContainer,
+  Firefly,
   SunsetSun,
   Moon,
   CloudsContainer,
@@ -23,8 +28,15 @@ import {
   SynthwaveGrid,
   ScanlineOverlay,
   MouseGlow,
+  OceanShimmerContainer,
+  ShimmerSparkle,
+  ClickRipple,
 } from "../components/background";
-import { LeftPalmTree, RightPalmTree, Mountains } from "../components/background";
+import {
+  LeftPalmTree,
+  RightPalmTree,
+  Mountains,
+} from "../components/background";
 
 // UI components
 import {
@@ -35,6 +47,7 @@ import {
   VibeImage,
   CodeDetroitImage,
   ScrollIndicator,
+  HeroTextContainer,
   Subtitle,
   Description,
   Tagline,
@@ -144,15 +157,15 @@ const isVibeCodingEvent = (event: MeetupEvent): boolean => {
     (term) =>
       titleLower.includes(term) ||
       descLower.includes(term) ||
-      groupLower.includes(term)
+      groupLower.includes(term),
   );
 
   const isCodingEvent = codingTerms.some(
-    (term) => titleLower.includes(term) || descLower.includes(term)
+    (term) => titleLower.includes(term) || descLower.includes(term),
   );
 
   const isFromTechGroup = techGroupTerms.some((term) =>
-    groupLower.includes(term)
+    groupLower.includes(term),
   );
 
   return isPrimaryMatch || isCodingEvent || isFromTechGroup;
@@ -195,9 +208,6 @@ export default function Home() {
   const [eventsVisible, setEventsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [maxScroll, setMaxScroll] = useState(1000);
-  
-  // Track peak scroll position to prevent moon from disappearing on scroll up
-  const [peakScrollY, setPeakScrollY] = useState(0);
 
   const statsRef = useRef<HTMLDivElement>(null);
   const vibeRef = useRef<HTMLDivElement>(null);
@@ -265,19 +275,16 @@ export default function Home() {
     const smoothUpdate = () => {
       // Lerp towards target for smoother movement
       const diff = targetScrollY - currentScrollY;
-      const smoothness = 0.15; // Lower = smoother but more lag
-      
+      const smoothness = 0.18; // Higher = more responsive parallax
+
       if (Math.abs(diff) > 0.5) {
         currentScrollY += diff * smoothness;
       } else {
         currentScrollY = targetScrollY;
       }
-      
+
       setScrollY(currentScrollY);
-      
-      // Update peak scroll for moon persistence
-      setPeakScrollY(prev => Math.max(prev, currentScrollY));
-      
+
       ticking = false;
       rafId = requestAnimationFrame(smoothUpdate);
     };
@@ -362,7 +369,7 @@ export default function Home() {
         if (diff > 0) {
           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
           const hours = Math.floor(
-            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
           );
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -421,7 +428,7 @@ export default function Home() {
         left: i * 12 + 5,
         size: 3 + (i % 3),
       })),
-    []
+    [],
   );
 
   // Memoize stars
@@ -436,29 +443,148 @@ export default function Home() {
         brightness: 0.3 + (i % 6) * 0.12,
         color: i % 25 === 0 ? "#ffd89b" : i % 18 === 0 ? "#ff9eb5" : undefined,
       })),
-    []
+    [],
   );
 
-  // Memoize clouds
+  // Memoize clouds - using deterministic pseudo-random to avoid hydration mismatch
   const clouds = useMemo(
+    () =>
+      Array.from({ length: 12 }, (_, i) => {
+        // Deterministic pseudo-random based on index
+        const pseudoRandom = (Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1;
+        return {
+          id: i,
+          top: 2 + (i % 6) * 10 + Math.sin(i) * 5,
+          duration: 60 + i * 15 + (i % 3) * 20,
+          delay: i * -15 - Math.abs(pseudoRandom) * 30,
+          opacity: 0.15 + (i % 4) * 0.08,
+          scale: 0.6 + (i % 4) * 0.35,
+          layer: i % 3,
+        };
+      }),
+    [],
+  );
+
+  // Single shooting star state - appears randomly, one at a time
+  const [shootingStar, setShootingStar] = useState<{
+    id: number;
+    top: number;
+    left: number;
+    direction: "tlbr" | "trbl" | "horizontal";
+    duration: number;
+    length: number;
+  } | null>(null);
+
+  // Shooting star spawner - random intervals, random direction
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let starId = 0;
+
+    const spawnShootingStar = () => {
+      const directions: Array<"tlbr" | "trbl" | "horizontal"> = [
+        "tlbr",
+        "trbl",
+        "horizontal",
+      ];
+      const direction =
+        directions[Math.floor(Math.random() * directions.length)];
+
+      // Position based on direction
+      let top: number, left: number;
+      if (direction === "tlbr") {
+        top = 5 + Math.random() * 25;
+        left = 5 + Math.random() * 35;
+      } else if (direction === "trbl") {
+        top = 5 + Math.random() * 25;
+        left = 60 + Math.random() * 30;
+      } else {
+        top = 10 + Math.random() * 35;
+        left = -5 + Math.random() * 15;
+      }
+
+      const duration = 1.0 + Math.random() * 0.8; // 1.0-1.8s
+      const length = 50 + Math.random() * 60; // 50-110px
+
+      setShootingStar({
+        id: starId++,
+        top,
+        left,
+        direction,
+        duration,
+        length,
+      });
+
+      // Clear the star after animation completes
+      setTimeout(
+        () => {
+          setShootingStar(null);
+        },
+        duration * 1000 + 100,
+      );
+
+      // Schedule next shooting star (random 8-25 seconds)
+      const nextDelay = 8000 + Math.random() * 17000;
+      timeoutId = setTimeout(spawnShootingStar, nextDelay);
+    };
+
+    // Initial delay before first shooting star (5-12 seconds)
+    const initialDelay = 5000 + Math.random() * 7000;
+    timeoutId = setTimeout(spawnShootingStar, initialDelay);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  // Memoize fireflies (ambient floating lights)
+  const fireflies = useMemo(
     () =>
       Array.from({ length: 12 }, (_, i) => ({
         id: i,
-        top: 2 + (i % 6) * 10 + Math.sin(i) * 5,
-        duration: 60 + i * 15 + (i % 3) * 20,
-        delay: i * -15 - Math.random() * 30,
-        opacity: 0.15 + (i % 4) * 0.08,
-        scale: 0.6 + (i % 4) * 0.35,
-        layer: i % 3,
+        left: 5 + ((i * 8) % 90),
+        bottom: 10 + ((i * 7) % 60),
+        delay: i * 1.5,
+        duration: 6 + (i % 4) * 2,
+        size: 4 + (i % 3) * 2,
       })),
-    []
+    [],
   );
 
-  // Calculate effective scroll for moon (uses peak to prevent disappearing)
-  const effectiveMoonScroll = Math.max(scrollY, peakScrollY * 0.7);
+  // Memoize shimmer sparkles for ocean reflection
+  const shimmerSparkles = useMemo(
+    () =>
+      Array.from({ length: 20 }, (_, i) => ({
+        id: i,
+        top: 5 + ((i * 4.5) % 70),
+        left: 30 + ((i * 2.1) % 40), // Centered where sun reflection would be
+        delay: (i % 8) * 0.4,
+        size: 3 + (i % 4) * 2,
+      })),
+    [],
+  );
+
+  // Click ripple state
+  const [ripples, setRipples] = useState<
+    Array<{ id: number; x: number; y: number }>
+  >([]);
+  const rippleIdRef = useRef(0);
+
+  // Click handler for ripple effect
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    const id = rippleIdRef.current++;
+    const x = e.clientX;
+    const y = e.clientY;
+
+    setRipples((prev) => [...prev, { id, x, y }]);
+
+    // Remove ripple after animation
+    setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== id));
+    }, 600);
+  }, []);
 
   return (
-    <>
+    <div onClick={handleClick} style={{ cursor: "default" }}>
       <Head>
         <title>Vibe Code Detroit - Community of Tech Enthusiasts</title>
         <meta
@@ -510,6 +636,9 @@ export default function Home() {
       {/* Sky overlay for day-night transition */}
       <SkyOverlay $scrollY={scrollY} $maxScroll={maxScroll} />
 
+      {/* Horizon atmospheric glow */}
+      <HorizonGlow $scrollY={scrollY} $maxScroll={maxScroll} />
+
       {/* Stars */}
       <StarsContainer $scrollY={scrollY} $maxScroll={maxScroll}>
         {stars.map((star) => (
@@ -525,8 +654,22 @@ export default function Home() {
         ))}
       </StarsContainer>
 
-      {/* Moon - uses effective scroll to prevent disappearing on scroll up */}
-      <Moon $scrollY={effectiveMoonScroll} $maxScroll={maxScroll} />
+      {/* Shooting Star - single, rare phenomenon */}
+      <ShootingStarsContainer $scrollY={scrollY} $maxScroll={maxScroll}>
+        {shootingStar && (
+          <ShootingStar
+            key={shootingStar.id}
+            $top={shootingStar.top}
+            $left={shootingStar.left}
+            $direction={shootingStar.direction}
+            $duration={shootingStar.duration}
+            $length={shootingStar.length}
+          />
+        )}
+      </ShootingStarsContainer>
+
+      {/* Moon */}
+      <Moon $scrollY={scrollY} $maxScroll={maxScroll} />
 
       {/* Clouds */}
       <CloudsContainer $scrollY={scrollY} $maxScroll={maxScroll}>
@@ -568,6 +711,33 @@ export default function Home() {
         <Ocean />
       </OceanContainer>
 
+      {/* Ocean shimmer sparkles */}
+      <OceanShimmerContainer $scrollY={scrollY} $maxScroll={maxScroll}>
+        {shimmerSparkles.map((sparkle) => (
+          <ShimmerSparkle
+            key={sparkle.id}
+            $top={sparkle.top}
+            $left={sparkle.left}
+            $delay={sparkle.delay}
+            $size={sparkle.size}
+          />
+        ))}
+      </OceanShimmerContainer>
+
+      {/* Fireflies - ambient floating lights near horizon */}
+      <FirefliesContainer $scrollY={scrollY} $maxScroll={maxScroll}>
+        {fireflies.map((firefly) => (
+          <Firefly
+            key={firefly.id}
+            $left={firefly.left}
+            $bottom={firefly.bottom}
+            $delay={firefly.delay}
+            $duration={firefly.duration}
+            $size={firefly.size}
+          />
+        ))}
+      </FirefliesContainer>
+
       {/* Mountains silhouette */}
       <Mountains />
 
@@ -608,22 +778,24 @@ export default function Home() {
                 data-scroll-indicator
               />
             </TitleImage>
-            <Subtitle>
-              Vibe Code Detroit is a community of tech enthusiasts and creators
-              coming together to build meaningful solutions through Vibe Coding.
-              Our goal is simple: leverage technology to foster genuine
-              connections, empower local initiatives, and nurture a supportive
-              ecosystem rooted deeply in community values.
-            </Subtitle>
-            <Description>
-              Whether you&apos;re a developer, a designer, or simply
-              tech-curious, join us as we explore collaborative coding sessions,
-              workshops, and projects designed to uplift Detroit through
-              innovation and creativity.
-            </Description>
-            <Tagline>
-              <TaglineText>Together, let&apos;s code the vibe.</TaglineText>
-            </Tagline>
+            <HeroTextContainer>
+              <Subtitle>
+                Vibe Code Detroit is a community of tech enthusiasts and
+                creators coming together to build meaningful solutions through
+                Vibe Coding. Our goal is simple: leverage technology to foster
+                genuine connections, empower local initiatives, and nurture a
+                supportive ecosystem rooted deeply in community values.
+              </Subtitle>
+              <Description>
+                Whether you&apos;re a developer, a designer, or simply
+                tech-curious, join us as we explore collaborative coding
+                sessions, workshops, and projects designed to uplift Detroit
+                through innovation and creativity.
+              </Description>
+              <Tagline>
+                <TaglineText>Together, let&apos;s code the vibe.</TaglineText>
+              </Tagline>
+            </HeroTextContainer>
           </Hero>
 
           {/* What is Vibe Coding Section */}
@@ -809,6 +981,11 @@ export default function Home() {
           </FooterLink>
         </Footer>
       </Page>
-    </>
+
+      {/* Click ripples */}
+      {ripples.map((ripple) => (
+        <ClickRipple key={ripple.id} $x={ripple.x} $y={ripple.y} />
+      ))}
+    </div>
   );
 }

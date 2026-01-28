@@ -13,13 +13,24 @@ import {
   palmSwayLeft,
   palmSwayRight,
   frondSway,
+  shootingStarTLBR,
+  shootingStarTRBL,
+  shootingStarHorizontal,
+  shootingStarGlow,
+  fireflyFloat,
+  fireflyPulse,
+  horizonPulse,
+  shimmerSparkle,
+  shimmerDrift,
+  rippleExpand,
+  reducedMotion,
 } from "../../styles/animations";
 
 // ============================================
 // SKY & CELESTIAL COMPONENTS
 // ============================================
 
-// Sky overlay for day-night transition
+// Sky overlay for day-night transition - radiant morning blue to deep night
 export const SkyOverlay = styled.div<{ $scrollY: number; $maxScroll: number }>`
   position: fixed;
   top: 0;
@@ -28,18 +39,83 @@ export const SkyOverlay = styled.div<{ $scrollY: number; $maxScroll: number }>`
   bottom: 0;
   pointer-events: none;
   z-index: -1;
+  contain: strict;
   background: ${(props) => {
     const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
-    const nightOpacity = Math.min(0.85, scrollProgress * 0.9);
+
+    // Morning colors (light radiant blue)
+    const morningTop = { r: 135, g: 206, b: 250 }; // Light sky blue
+    const morningMid = { r: 176, g: 224, b: 255 }; // Lighter blue
+    const morningLow = { r: 255, g: 183, b: 140 }; // Warm peachy horizon
+    const morningBottom = { r: 255, g: 140, b: 105 }; // Sunset orange tint
+
+    // Night colors (deep purple/blue)
+    const nightTop = { r: 5, g: 5, b: 25 }; // Deep space
+    const nightMid = { r: 15, g: 10, b: 45 }; // Deep purple
+    const nightLow = { r: 30, g: 20, b: 60 }; // Purple
+    const nightBottom = { r: 40, g: 25, b: 70 }; // Lighter purple
+
+    // Interpolate colors based on scroll
+    const lerp = (a: number, b: number, t: number) =>
+      Math.round(a + (b - a) * t);
+
+    const top = {
+      r: lerp(morningTop.r, nightTop.r, scrollProgress),
+      g: lerp(morningTop.g, nightTop.g, scrollProgress),
+      b: lerp(morningTop.b, nightTop.b, scrollProgress),
+    };
+    const mid = {
+      r: lerp(morningMid.r, nightMid.r, scrollProgress),
+      g: lerp(morningMid.g, nightMid.g, scrollProgress),
+      b: lerp(morningMid.b, nightMid.b, scrollProgress),
+    };
+    const low = {
+      r: lerp(morningLow.r, nightLow.r, scrollProgress),
+      g: lerp(morningLow.g, nightLow.g, scrollProgress),
+      b: lerp(morningLow.b, nightLow.b, scrollProgress),
+    };
+    const bottom = {
+      r: lerp(morningBottom.r, nightBottom.r, scrollProgress),
+      g: lerp(morningBottom.g, nightBottom.g, scrollProgress),
+      b: lerp(morningBottom.b, nightBottom.b, scrollProgress),
+    };
+
     return `linear-gradient(
       180deg,
-      rgba(5, 5, 25, ${nightOpacity}) 0%,
-      rgba(15, 10, 45, ${nightOpacity * 0.9}) 30%,
-      rgba(30, 20, 60, ${nightOpacity * 0.7}) 60%,
-      rgba(40, 25, 70, ${nightOpacity * 0.5}) 100%
+      rgb(${top.r}, ${top.g}, ${top.b}) 0%,
+      rgb(${mid.r}, ${mid.g}, ${mid.b}) 30%,
+      rgb(${low.r}, ${low.g}, ${low.b}) 70%,
+      rgb(${bottom.r}, ${bottom.g}, ${bottom.b}) 100%
     )`;
   }};
-  transition: background 0.3s linear;
+`;
+
+// ============================================
+// HORIZON GLOW - Atmospheric effect at horizon
+// ============================================
+
+export const HorizonGlow = styled.div<{ $scrollY: number; $maxScroll: number }>`
+  position: fixed;
+  bottom: 15vh;
+  left: 0;
+  right: 0;
+  height: 30vh;
+  pointer-events: none;
+  z-index: 0;
+  contain: strict;
+  background: ${(props) => {
+    const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
+    const opacity = Math.max(0.3, 1 - scrollProgress * 0.8);
+    return `radial-gradient(
+      ellipse 120% 100% at 50% 100%,
+      rgba(255, 150, 100, ${opacity * 0.6}) 0%,
+      rgba(255, 100, 80, ${opacity * 0.4}) 30%,
+      rgba(255, 80, 120, ${opacity * 0.2}) 50%,
+      transparent 70%
+    )`;
+  }};
+  animation: ${horizonPulse} 8s ease-in-out infinite;
+  ${reducedMotion}
 `;
 
 // Stars container
@@ -60,10 +136,9 @@ export const StarsContainer = styled.div<{
     const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
     return Math.min(1, scrollProgress * 1.5);
   }};
-  transition: opacity 0.3s linear;
 `;
 
-// Individual star
+// Individual star - GPU composited
 export const Star = styled.div<{
   $top: number;
   $left: number;
@@ -93,34 +168,197 @@ export const Star = styled.div<{
     infinite;
   animation-delay: ${(props) => props.$delay * -2}s;
   will-change: opacity;
+  contain: strict;
+  ${reducedMotion}
 `;
 
-// Large sunset sun - with smoother CSS transition for parallax
+// ============================================
+// SHOOTING STARS - Rare, beautiful streaks
+// ============================================
+
+export const ShootingStarsContainer = styled.div<{
+  $scrollY: number;
+  $maxScroll: number;
+}>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  contain: strict;
+  opacity: ${(props) => {
+    const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
+    // Only visible after 20% scroll (when night starts)
+    return scrollProgress > 0.2 ? Math.min(1, (scrollProgress - 0.2) * 2) : 0;
+  }};
+`;
+
+// Direction types: 'tlbr' (top-left to bottom-right), 'trbl' (top-right to bottom-left), 'horizontal'
+const getShootingStarAnimation = (direction: string) => {
+  switch (direction) {
+    case "trbl":
+      return shootingStarTRBL;
+    case "horizontal":
+      return shootingStarHorizontal;
+    case "tlbr":
+    default:
+      return shootingStarTLBR;
+  }
+};
+
+// Rotation angle - the TAIL points backward from direction of travel
+const getRotation = (direction: string) => {
+  switch (direction) {
+    case "trbl":
+      return "225deg"; // Tail points upper-right (moving lower-left)
+    case "horizontal":
+      return "172deg"; // Tail points slightly up-left (moving right-down)
+    case "tlbr":
+    default:
+      return "135deg"; // Tail points upper-left (moving lower-right)
+  }
+};
+
+export const ShootingStar = styled.div<{
+  $top: number;
+  $left: number;
+  $duration: number;
+  $direction: "tlbr" | "trbl" | "horizontal";
+  $length?: number;
+}>`
+  position: absolute;
+  top: ${(props) => props.$top}%;
+  left: ${(props) => props.$left}%;
+  width: ${(props) => props.$length || 80}px;
+  height: 2px;
+  /* Gradient: tail (transparent, left) → head (bright, right) */
+  /* The rotation orients the whole element so tail is behind direction of travel */
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.9) 80%,
+    #fff 100%
+  );
+  border-radius: 2px;
+  transform: rotate(${(props) => getRotation(props.$direction)});
+  animation:
+    ${(props) => getShootingStarAnimation(props.$direction)}
+      ${(props) => props.$duration}s ease-out forwards,
+    ${shootingStarGlow} 0.5s ease-in-out infinite;
+  will-change: transform, opacity;
+  contain: strict;
+  ${reducedMotion}
+
+  /* Bright head of the shooting star */
+  &::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow:
+      0 0 8px 3px #fff,
+      0 0 16px 6px rgba(64, 244, 255, 0.9);
+  }
+`;
+
+// Fireflies - Ambient floating light
+
+export const FirefliesContainer = styled.div<{
+  $scrollY: number;
+  $maxScroll: number;
+}>`
+  position: fixed;
+  bottom: 20vh;
+  left: 0;
+  right: 0;
+  height: 40vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  contain: strict;
+  opacity: ${(props) => {
+    const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
+    // Peak visibility at 40-60% scroll
+    if (scrollProgress < 0.3) return scrollProgress * 2;
+    if (scrollProgress > 0.7) return Math.max(0, (1 - scrollProgress) * 3);
+    return 0.8;
+  }};
+`;
+
+export const Firefly = styled.div<{
+  $left: number;
+  $bottom: number;
+  $delay: number;
+  $duration: number;
+  $size: number;
+}>`
+  position: absolute;
+  left: ${(props) => props.$left}%;
+  bottom: ${(props) => props.$bottom}%;
+  width: ${(props) => props.$size}px;
+  height: ${(props) => props.$size}px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 240, 180, 1) 0%,
+    rgba(255, 220, 100, 0.8) 40%,
+    rgba(255, 200, 50, 0) 100%
+  );
+  border-radius: 50%;
+  animation:
+    ${fireflyFloat} ${(props) => props.$duration}s ease-in-out
+      ${(props) => props.$delay}s infinite,
+    ${fireflyPulse} ${(props) => props.$duration * 0.3}s ease-in-out infinite;
+  will-change: transform, opacity;
+  contain: strict;
+  ${reducedMotion}
+`;
+
+// Large sunset sun
 export const SunsetSun = styled.div<{ $scrollY: number; $maxScroll: number }>`
   position: fixed;
-  bottom: ${(props) => {
-    const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
-    // Smoother easing for sun movement
-    const easedProgress = scrollProgress * scrollProgress * (3 - 2 * scrollProgress);
-    return 55 - easedProgress * 47;
-  }}vh;
+  bottom: 55vh;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%)
+    translateY(
+      ${(props) => {
+        const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
+        // Smoother easing for sun movement
+        const easedProgress =
+          scrollProgress * scrollProgress * (3 - 2 * scrollProgress);
+        return easedProgress * 47;
+      }}vh
+    );
   width: 280px;
   height: 280px;
   z-index: 0;
   animation: ${sunGlow} 4s ease-in-out infinite;
-  transition: bottom 0.1s linear;
-  will-change: bottom;
+  will-change: transform;
+  contain: layout style;
+  ${reducedMotion}
 
   @media (max-width: 768px) {
     width: 180px;
     height: 180px;
-    bottom: ${(props) => {
-      const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
-      const easedProgress = scrollProgress * scrollProgress * (3 - 2 * scrollProgress);
-      return 45 - easedProgress * 38;
-    }}vh;
+    bottom: 45vh;
+    transform: translateX(-50%)
+      translateY(
+        ${(props) => {
+          const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
+          const easedProgress =
+            scrollProgress * scrollProgress * (3 - 2 * scrollProgress);
+          return easedProgress * 38;
+        }}vh
+      );
   }
 
   &::before {
@@ -141,14 +379,10 @@ export const SunsetSun = styled.div<{ $scrollY: number; $maxScroll: number }>`
   }
 `;
 
-// Moon component - rises as sun sets, stays visible when scrolling up
+// Moon component - GPU-accelerated parallax using transform
 export const Moon = styled.div<{ $scrollY: number; $maxScroll: number }>`
   position: fixed;
-  top: ${(props) => {
-    const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
-    const easedProgress = Math.pow(scrollProgress, 0.7);
-    return 120 - easedProgress * 112;
-  }}vh;
+  top: 120vh;
   right: 15%;
   width: 100px;
   height: 100px;
@@ -156,15 +390,28 @@ export const Moon = styled.div<{ $scrollY: number; $maxScroll: number }>`
   background: linear-gradient(135deg, #f5f5ff 0%, #e8ecf5 40%, #d0d8e8 100%);
   z-index: 0;
   animation: ${moonGlow} 4s ease-in-out infinite;
-  transition: top 0.1s linear, opacity 0.3s ease-out;
-  will-change: top, opacity;
-  /* Moon stays visible once it appears - no fade out on scroll up */
+  will-change: transform, opacity;
+  contain: layout style;
+  ${reducedMotion}
+  transform: translateY(
+    ${(props) => {
+    const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
+    const easedProgress = Math.pow(scrollProgress, 0.7);
+    return -easedProgress * 112;
+  }}vh
+  );
+  /* Smooth fade: starts at 10% scroll, fully visible by 40% */
   opacity: ${(props) => {
     const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
-    // Moon fades in after 20% scroll, but stays visible
-    return scrollProgress > 0.15 ? Math.min(1, (scrollProgress - 0.15) * 3) : 0;
+    // Gradual fade - no hard threshold
+    if (scrollProgress < 0.1) return 0;
+    if (scrollProgress > 0.4) return 1;
+    // Smooth ease-in-out curve between 0.1 and 0.4
+    const t = (scrollProgress - 0.1) / 0.3;
+    return t * t * (3 - 2 * t); // smoothstep
   }};
-  box-shadow: inset -15px -10px 0 rgba(180, 190, 210, 0.4),
+  box-shadow:
+    inset -15px -10px 0 rgba(180, 190, 210, 0.4),
     0 0 40px rgba(200, 220, 255, 0.5);
 
   @media (max-width: 768px) {
@@ -182,7 +429,8 @@ export const Moon = styled.div<{ $scrollY: number; $maxScroll: number }>`
     height: 15px;
     border-radius: 50%;
     background: rgba(180, 190, 210, 0.3);
-    box-shadow: 30px 15px 0 8px rgba(180, 190, 210, 0.25),
+    box-shadow:
+      30px 15px 0 8px rgba(180, 190, 210, 0.25),
       15px 45px 0 5px rgba(180, 190, 210, 0.2),
       50px 35px 0 4px rgba(180, 190, 210, 0.15);
   }
@@ -230,6 +478,8 @@ export const Cloud = styled.div<{
     ${(props) => props.$delay}s infinite;
   will-change: transform;
   filter: blur(${(props) => props.$layer * 0.5}px);
+  contain: layout style;
+  ${reducedMotion}
 
   &::before,
   &::after {
@@ -318,6 +568,8 @@ export const Particle = styled.div<{
     ${(props) => props.$delay}s infinite;
   opacity: 0;
   will-change: transform, opacity;
+  contain: strict;
+  ${reducedMotion}
 `;
 
 // ============================================
@@ -405,10 +657,10 @@ export const SunReflection = styled.div<{ $scrollY: number }>`
 
 export const MountainsContainer = styled.div`
   position: fixed;
-  bottom: 8vh;
+  bottom: 12vh;
   left: 0;
   right: 0;
-  height: 40vh;
+  height: 55vh;
   z-index: 0;
   pointer-events: none;
 `;
@@ -443,16 +695,14 @@ export const SynthwaveGrid = styled.div`
     left: 0;
     right: 0;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 97, 166, 0.3) 1px,
-        transparent 1px
-      ),
+    background:
+      linear-gradient(90deg, rgba(255, 97, 166, 0.3) 1px, transparent 1px),
       linear-gradient(rgba(64, 244, 255, 0.2) 1px, transparent 1px);
     background-size: 60px 25px;
     transform: perspective(400px) rotateX(65deg);
     transform-origin: center bottom;
-    animation: ${gridMove} 15s linear infinite,
+    animation:
+      ${gridMove} 15s linear infinite,
       ${gridGlow} 5s ease-in-out infinite;
     mask-image: linear-gradient(
       to top,
@@ -481,9 +731,9 @@ export const SynthwaveGrid = styled.div`
 export const PalmTreeLeft = styled.svg`
   position: fixed;
   bottom: 0;
-  left: -5%;
-  width: 550px;
-  height: 100vh;
+  left: -3%;
+  width: 750px;
+  height: 115vh;
   z-index: 2;
   pointer-events: none;
   transform-origin: bottom center;
@@ -491,40 +741,40 @@ export const PalmTreeLeft = styled.svg`
   overflow: visible;
 
   @media (max-width: 1400px) {
-    width: 480px;
-    left: -8%;
+    width: 650px;
+    left: -5%;
   }
 
   @media (max-width: 1200px) {
-    width: 400px;
-    left: -10%;
+    width: 550px;
+    left: -7%;
   }
 
   @media (max-width: 992px) {
-    width: 320px;
-    height: 85vh;
-    left: -12%;
+    width: 450px;
+    height: 95vh;
+    left: -10%;
   }
 
   @media (max-width: 768px) {
-    width: 220px;
-    height: 60vh;
-    left: -15%;
+    width: 320px;
+    height: 75vh;
+    left: -12%;
   }
 
   @media (max-width: 480px) {
-    width: 160px;
-    height: 50vh;
-    left: -18%;
+    width: 240px;
+    height: 60vh;
+    left: -15%;
   }
 `;
 
 export const PalmTreeRight = styled.svg`
   position: fixed;
   bottom: 0;
-  right: -5%;
-  width: 550px;
-  height: 100vh;
+  right: -3%;
+  width: 750px;
+  height: 115vh;
   z-index: 2;
   pointer-events: none;
   transform-origin: bottom center;
@@ -533,31 +783,31 @@ export const PalmTreeRight = styled.svg`
   overflow: visible;
 
   @media (max-width: 1400px) {
-    width: 480px;
-    right: -8%;
+    width: 650px;
+    right: -5%;
   }
 
   @media (max-width: 1200px) {
-    width: 400px;
-    right: -10%;
+    width: 550px;
+    right: -7%;
   }
 
   @media (max-width: 992px) {
-    width: 320px;
-    height: 85vh;
-    right: -12%;
+    width: 450px;
+    height: 95vh;
+    right: -10%;
   }
 
   @media (max-width: 768px) {
-    width: 220px;
-    height: 60vh;
-    right: -15%;
+    width: 320px;
+    height: 75vh;
+    right: -12%;
   }
 
   @media (max-width: 480px) {
-    width: 160px;
-    height: 50vh;
-    right: -18%;
+    width: 240px;
+    height: 60vh;
+    right: -15%;
   }
 `;
 
@@ -611,4 +861,84 @@ export const MouseGlow = styled.div<{ $x: number; $y: number }>`
   @media (max-width: 768px) {
     display: none;
   }
+`;
+
+// ============================================
+// OCEAN SHIMMER SPARKLES
+// ============================================
+
+export const OceanShimmerContainer = styled.div<{
+  $scrollY: number;
+  $maxScroll: number;
+}>`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 22vh;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+  contain: strict;
+  /* More visible when sun is up (less scroll) */
+  opacity: ${(props) => {
+    const scrollProgress = Math.min(props.$scrollY / props.$maxScroll, 1);
+    return Math.max(0.2, 1 - scrollProgress * 0.9);
+  }};
+`;
+
+export const ShimmerSparkle = styled.div<{
+  $top: number;
+  $left: number;
+  $delay: number;
+  $size: number;
+}>`
+  position: absolute;
+  top: ${(props) => props.$top}%;
+  left: ${(props) => props.$left}%;
+  width: ${(props) => props.$size}px;
+  height: ${(props) => props.$size}px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 220, 180, 0.6) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation:
+    ${shimmerSparkle} ${(props) => 1.5 + props.$delay * 0.3}s ease-in-out
+      infinite,
+    ${shimmerDrift} ${(props) => 3 + props.$delay * 0.5}s ease-in-out infinite;
+  animation-delay: ${(props) => props.$delay * 0.2}s;
+  will-change: opacity, transform;
+  contain: strict;
+  ${reducedMotion}
+`;
+
+// ============================================
+// CLICK RIPPLE
+// ============================================
+
+export const ClickRipple = styled.div<{
+  $x: number;
+  $y: number;
+}>`
+  position: fixed;
+  top: ${(props) => props.$y}px;
+  left: ${(props) => props.$x}px;
+  width: 200px;
+  height: 200px;
+  pointer-events: none;
+  z-index: 9998;
+  border-radius: 50%;
+  border: 2px solid rgba(64, 244, 255, 0.5);
+  background: radial-gradient(
+    circle,
+    rgba(64, 244, 255, 0.15) 0%,
+    rgba(255, 97, 166, 0.1) 40%,
+    transparent 70%
+  );
+  animation: ${rippleExpand} 0.6s ease-out forwards;
+  will-change: transform, opacity;
+  ${reducedMotion}
 `;

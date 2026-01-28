@@ -1,4 +1,15 @@
-import { keyframes } from "styled-components";
+import { keyframes, css } from "styled-components";
+
+// ============================================
+// Reduced Motion Support User Preference
+// ============================================
+
+export const reducedMotion = css`
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+    transition: none !important;
+  }
+`;
 
 // ============================================
 // KEYFRAME ANIMATIONS
@@ -281,5 +292,164 @@ export const gridGlow = keyframes`
   }
   50% {
     opacity: 0.8;
+  }
+`;
+
+// ============================================
+// SHOOTING STARS
+// ============================================
+
+// Direction: Top-left to bottom-right
+export const shootingStarTLBR = keyframes`
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(350px) translateY(280px);
+    opacity: 0;
+  }
+`;
+
+// Direction: Top-right to bottom-left
+export const shootingStarTRBL = keyframes`
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-350px) translateY(280px);
+    opacity: 0;
+  }
+`;
+
+// Direction: Horizontal across sky (slight downward angle)
+export const shootingStarHorizontal = keyframes`
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(400px) translateY(60px);
+    opacity: 0;
+  }
+`;
+
+export const shootingStarGlow = keyframes`
+  0%, 100% {
+    filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 8px #40f4ff);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 12px #40f4ff) drop-shadow(0 0 20px #ff61a6);
+  }
+`;
+
+// ============================================
+// FIREFLIES / AMBIENT GLOW
+// ============================================
+
+export const fireflyFloat = keyframes`
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  25% {
+    transform: translate(15px, -20px) scale(1.2);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-10px, -35px) scale(0.8);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translate(20px, -15px) scale(1.1);
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.4;
+  }
+`;
+
+export const fireflyPulse = keyframes`
+  0%, 100% {
+    box-shadow: 0 0 4px 2px rgba(255, 230, 150, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 8px 4px rgba(255, 230, 150, 1), 0 0 16px 8px rgba(255, 200, 100, 0.5);
+  }
+`;
+
+// ============================================
+// HORIZON GLOW
+// ============================================
+
+export const horizonPulse = keyframes`
+  0%, 100% {
+    opacity: 0.6;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scaleY(1.1);
+  }
+`;
+
+// ============================================
+// OCEAN SHIMMER SPARKLES
+// ============================================
+
+export const shimmerSparkle = keyframes`
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+`;
+
+export const shimmerDrift = keyframes`
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    transform: translateX(5px) translateY(-3px);
+  }
+`;
+
+// ============================================
+// NEW: CLICK RIPPLE
+// ============================================
+
+export const rippleExpand = keyframes`
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
   }
 `;

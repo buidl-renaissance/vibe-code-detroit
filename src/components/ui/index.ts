@@ -6,6 +6,7 @@ export {
   VibeImage,
   CodeDetroitImage,
   ScrollIndicator,
+  HeroTextContainer,
   Subtitle,
   Description,
   Tagline,
