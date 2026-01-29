@@ -1,0 +1,37 @@
+// Background scene components
+export {
+  SkyOverlay,
+  HorizonGlow,
+  StarsContainer,
+  Star,
+  ShootingStarsContainer,
+  ShootingStar,
+  FirefliesContainer,
+  Firefly,
+  SunsetSun,
+  Moon,
+  CloudsContainer,
+  Cloud,
+  CloudPuff,
+  CloudPuffExtra,
+  ParticlesContainer,
+  Particle,
+  OceanContainer,
+  WaveLayer,
+  Ocean,
+  SunReflection,
+  MountainsContainer,
+  MountainsSVG,
+  SynthwaveGrid,
+  PalmTreeLeft,
+  PalmTreeRight,
+  FrondGroup,
+  ScanlineOverlay,
+  MouseGlow,
+  OceanShimmerContainer,
+  ShimmerSparkle,
+  ClickRipple,
+} from "./SceneElements";
+
+// SVG components
+export { LeftPalmTree, RightPalmTree, Mountains } from "./SVGElements";
