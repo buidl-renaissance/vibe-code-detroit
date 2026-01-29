@@ -31,8 +31,6 @@ import {
   OceanShimmerContainer,
   ShimmerSparkle,
   ClickRipple,
-} from "../components/background";
-import {
   LeftPalmTree,
   RightPalmTree,
   Mountains,
@@ -102,6 +100,9 @@ import {
   isVibeCodingEvent,
   formatEventDate,
 } from "../types/events";
+
+// Hooks
+import { useClickRipple } from "../hooks";
 
 // ============================================
 // TYPES
@@ -295,22 +296,38 @@ export default function Home() {
   // Countdown timer
   useEffect(() => {
     const calculateCountdown = () => {
-      if (events.length > 0) {
-        const nextEvent = events[0];
-        const eventDate = new Date(nextEvent.dateTime);
-        const now = new Date();
-        const diff = eventDate.getTime() - now.getTime();
-
-        if (diff > 0) {
-          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(
-            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-          );
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-          setCountdown({ days, hours, minutes, seconds });
-        }
+      if (events.length === 0) {
+        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
       }
+
+      const now = new Date();
+      // Find the first event that is still in the future
+      const upcomingEvent = events.find(
+        (event) => new Date(event.dateTime).getTime() > now.getTime(),
+      );
+
+      if (!upcomingEvent) {
+        // All events are in the past
+        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      const eventDate = new Date(upcomingEvent.dateTime);
+      const diff = eventDate.getTime() - now.getTime();
+
+      if (diff <= 0) {
+        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor(
+        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+      );
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      setCountdown({ days, hours, minutes, seconds });
     };
 
     calculateCountdown();
@@ -326,7 +343,17 @@ export default function Home() {
           throw new Error("Failed to fetch events");
         }
         const data = await response.json();
-        const filteredEvents = data.events.filter(isVibeCodingEvent);
+        const now = Date.now();
+        const filteredEvents = data.events
+          .filter(isVibeCodingEvent)
+          .filter((event: MeetupEvent) => {
+            const time = new Date(event.dateTime).getTime();
+            return !Number.isNaN(time) && time >= now;
+          })
+          .sort(
+            (a: MeetupEvent, b: MeetupEvent) =>
+              new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime(),
+          );
         setEvents(filteredEvents);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load events");
@@ -500,25 +527,8 @@ export default function Home() {
     [],
   );
 
-  // Click ripple state
-  const [ripples, setRipples] = useState<
-    Array<{ id: number; x: number; y: number }>
-  >([]);
-  const rippleIdRef = useRef(0);
-
-  // Click handler for ripple effect
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    const id = rippleIdRef.current++;
-    const x = e.clientX;
-    const y = e.clientY;
-
-    setRipples((prev) => [...prev, { id, x, y }]);
-
-    // Remove ripple after animation
-    setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== id));
-    }, 600);
-  }, []);
+  // Click ripple effect using shared hook
+  const { ripples, handleClick } = useClickRipple();
 
   return (
     <div onClick={handleClick} style={{ cursor: "default" }}>

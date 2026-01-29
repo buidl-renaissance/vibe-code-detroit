@@ -1,10 +1,3 @@
-/**
- * Scene configuration for the Vibe Code Detroit landing page.
- * These values control the visual appearance and behavior of animated elements.
- *
- * @see ENGINEERING_REVIEW.md for architectural context
- */
-
 // ============================================
 // TYPE DEFINITIONS
 // ============================================

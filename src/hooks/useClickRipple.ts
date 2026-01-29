@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import type { MouseEvent } from "react";
 
 interface Ripple {
@@ -41,6 +41,16 @@ export function useClickRipple(
 
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const rippleIdRef = useRef(0);
+  const timeoutIdsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+
+  // Clean up all timeouts on unmount
+  useEffect(() => {
+    const timeoutIds = timeoutIdsRef.current;
+    return () => {
+      timeoutIds.forEach((id) => clearTimeout(id));
+      timeoutIds.clear();
+    };
+  }, []);
 
   const handleClick = useCallback(
     (e: MouseEvent) => {
@@ -55,9 +65,11 @@ export function useClickRipple(
       });
 
       // Remove ripple after animation completes
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setRipples((prev) => prev.filter((r) => r.id !== id));
+        timeoutIdsRef.current.delete(timeoutId);
       }, duration);
+      timeoutIdsRef.current.add(timeoutId);
     },
     [duration, maxRipples],
   );

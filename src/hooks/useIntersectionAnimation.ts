@@ -119,14 +119,22 @@ export function useMultipleIntersectionAnimation(
       (entries) => {
         entries.forEach((entry) => {
           const index = refs.findIndex((ref) => ref.current === entry.target);
-          if (index !== -1 && entry.isIntersecting) {
-            setVisibility((prev) => {
-              const next = [...prev];
-              next[index] = true;
-              return next;
-            });
-            if (triggerOnce && entry.target) {
-              observer.unobserve(entry.target);
+          if (index !== -1) {
+            if (entry.isIntersecting) {
+              setVisibility((prev) => {
+                const next = [...prev];
+                next[index] = true;
+                return next;
+              });
+              if (triggerOnce && entry.target) {
+                observer.unobserve(entry.target);
+              }
+            } else if (!triggerOnce) {
+              setVisibility((prev) => {
+                const next = [...prev];
+                next[index] = false;
+                return next;
+              });
             }
           }
         });
