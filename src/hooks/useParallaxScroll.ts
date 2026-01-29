@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-interface ParallaxScrollState {
+export interface ParallaxScrollState {
   scrollY: number;
   maxScroll: number;
   scrollProgress: number;
@@ -34,6 +34,7 @@ export function useParallaxScroll(
     let currentScrollY = 0;
     let targetScrollY = 0;
     let ticking = false;
+    let isAnimating = false;
 
     const updateMaxScroll = () => {
       const docHeight = document.documentElement.scrollHeight;
@@ -45,22 +46,32 @@ export function useParallaxScroll(
       targetScrollY = window.scrollY;
       if (!ticking) {
         ticking = true;
+        startAnimation();
       }
     };
 
-    // Smooth interpolation for scroll position
+    // Smooth interpolation for scroll position (only while converging)
     const smoothUpdate = () => {
       const diff = targetScrollY - currentScrollY;
 
       if (Math.abs(diff) > 0.5) {
         currentScrollY += diff * smoothness;
+        setScrollY(currentScrollY);
+        rafId = requestAnimationFrame(smoothUpdate);
       } else {
         currentScrollY = targetScrollY;
+        setScrollY(currentScrollY);
+        isAnimating = false;
       }
-
-      setScrollY(currentScrollY);
       ticking = false;
-      rafId = requestAnimationFrame(smoothUpdate);
+    };
+
+    // Start animation loop on scroll
+    const startAnimation = () => {
+      if (!isAnimating) {
+        isAnimating = true;
+        rafId = requestAnimationFrame(smoothUpdate);
+      }
     };
 
     // Initial calculation
@@ -68,7 +79,6 @@ export function useParallaxScroll(
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", updateMaxScroll, { passive: true });
-    rafId = requestAnimationFrame(smoothUpdate);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);

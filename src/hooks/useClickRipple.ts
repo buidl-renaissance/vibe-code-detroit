@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 
 interface Ripple {
   id: number;

@@ -54,7 +54,8 @@ export function useShootingStar(
   const [shootingStar, setShootingStar] = useState<ShootingStar | null>(null);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let clearTimeoutId: ReturnType<typeof setTimeout>;
     let starId = 0;
 
     const spawnShootingStar = () => {
@@ -93,7 +94,7 @@ export function useShootingStar(
       });
 
       // Clear the star after animation completes
-      setTimeout(
+      clearTimeoutId = setTimeout(
         () => {
           setShootingStar(null);
         },
@@ -112,6 +113,7 @@ export function useShootingStar(
 
     return () => {
       clearTimeout(timeoutId);
+      clearTimeout(clearTimeoutId);
     };
   }, [
     minInterval,

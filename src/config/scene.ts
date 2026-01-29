@@ -239,9 +239,12 @@ export const smoothstep = (t: number): number => t * t * (3 - 2 * t);
 
 /**
  * Generate deterministic pseudo-random number based on index
- * Useful for avoiding hydration mismatches
+ * Returns a value between 0 and 1
  */
-export const pseudoRandom = (index: number): number =>
-  (Math.sin(index * 12.9898 + 78.233) * 43758.5453) % 1;
+export const pseudoRandom = (index: number): number => {
+  const x = Math.sin(index * 12.9898 + 78.233) * 43758.5453;
+  // Normalize between 0 and 1
+  return ((x % 1) + 1) % 1;
+};
 
 export default SCENE_CONFIG;

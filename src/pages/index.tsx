@@ -96,94 +96,21 @@ import {
   MapIcon,
 } from "../components/icons";
 
+// Types and utilities
+import {
+  MeetupEvent,
+  isVibeCodingEvent,
+  formatEventDate,
+} from "../types/events";
+
 // ============================================
 // TYPES
 // ============================================
-
-interface MeetupEvent {
-  id: number;
-  eventId: string;
-  title: string;
-  description: string;
-  dateTime: string;
-  venue: {
-    address: string;
-    city: string;
-    name: string;
-    state: string;
-  } | null;
-  eventUrl: string;
-  group: {
-    name: string;
-  };
-}
 
 interface MousePosition {
   x: number;
   y: number;
 }
-
-// ============================================
-// HELPER FUNCTIONS
-// ============================================
-
-// Filter function for vibe coding events
-const isVibeCodingEvent = (event: MeetupEvent): boolean => {
-  const titleLower = event.title.toLowerCase();
-  const descLower = event.description.toLowerCase();
-  const groupLower = event.group?.name?.toLowerCase() || "";
-
-  const primaryTerms = ["vibe code", "vibe coding", "vibecode"];
-  const codingTerms = [
-    "coding",
-    "programming",
-    "developer",
-    "software development",
-    "hackathon",
-    "code along",
-    "web development",
-    "app development",
-  ];
-  const techGroupTerms = [
-    "code",
-    "developer",
-    "programming",
-    "tech",
-    "software",
-    "hacker",
-  ];
-
-  const isPrimaryMatch = primaryTerms.some(
-    (term) =>
-      titleLower.includes(term) ||
-      descLower.includes(term) ||
-      groupLower.includes(term),
-  );
-
-  const isCodingEvent = codingTerms.some(
-    (term) => titleLower.includes(term) || descLower.includes(term),
-  );
-
-  const isFromTechGroup = techGroupTerms.some((term) =>
-    groupLower.includes(term),
-  );
-
-  return isPrimaryMatch || isCodingEvent || isFromTechGroup;
-};
-
-// Format date for display
-const formatEventDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
-};
 
 // ============================================
 // MAIN COMPONENT
@@ -257,36 +184,45 @@ export default function Home() {
     let currentScrollY = 0;
     let targetScrollY = 0;
     let ticking = false;
+    let isAnimating = false;
 
     const updateMaxScroll = () => {
       const docHeight = document.documentElement.scrollHeight;
       const winHeight = window.innerHeight;
-      setMaxScroll(docHeight - winHeight);
+      setMaxScroll(Math.max(docHeight - winHeight, 1));
     };
 
     const handleScroll = () => {
       targetScrollY = window.scrollY;
       if (!ticking) {
         ticking = true;
+        startAnimationIfNeeded();
       }
     };
 
-    // Smooth interpolation for scroll position
+    // Smooth interpolation - only runs while converging
     const smoothUpdate = () => {
-      // Lerp towards target for smoother movement
       const diff = targetScrollY - currentScrollY;
-      const smoothness = 0.18; // Higher = more responsive parallax
+      const smoothness = 0.18;
 
       if (Math.abs(diff) > 0.5) {
         currentScrollY += diff * smoothness;
+        setScrollY(currentScrollY);
+        rafId = requestAnimationFrame(smoothUpdate);
       } else {
         currentScrollY = targetScrollY;
+        setScrollY(currentScrollY);
+        isAnimating = false;
       }
-
-      setScrollY(currentScrollY);
-
       ticking = false;
-      rafId = requestAnimationFrame(smoothUpdate);
+    };
+
+    // Start animation loop when scroll occurs
+    const startAnimationIfNeeded = () => {
+      if (!isAnimating) {
+        isAnimating = true;
+        rafId = requestAnimationFrame(smoothUpdate);
+      }
     };
 
     // Initial calculation
@@ -294,7 +230,6 @@ export default function Home() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", updateMaxScroll, { passive: true });
-    rafId = requestAnimationFrame(smoothUpdate);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -477,7 +412,8 @@ export default function Home() {
 
   // Shooting star spawner - random intervals, random direction
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let clearTimeoutId: ReturnType<typeof setTimeout>;
     let starId = 0;
 
     const spawnShootingStar = () => {
@@ -515,7 +451,7 @@ export default function Home() {
       });
 
       // Clear the star after animation completes
-      setTimeout(
+      clearTimeoutId = setTimeout(
         () => {
           setShootingStar(null);
         },
@@ -533,6 +469,7 @@ export default function Home() {
 
     return () => {
       clearTimeout(timeoutId);
+      clearTimeout(clearTimeoutId);
     };
   }, []);
 

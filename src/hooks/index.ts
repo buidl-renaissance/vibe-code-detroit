@@ -2,7 +2,7 @@
 // These hooks extract common UI logic for better reusability and testing
 
 export { useParallaxScroll } from "./useParallaxScroll";
-export type { default as UseParallaxScrollReturn } from "./useParallaxScroll";
+export type { ParallaxScrollState } from "./useParallaxScroll";
 
 export { useMouseGlow } from "./useMouseGlow";
 
